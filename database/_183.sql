@@ -27,4 +27,11 @@
 -- | Max       |
 -- +-----------+
 
+SELECT tb1.Name as Customers
+FROM Customers AS tb1
+LEFT JOIN Orders AS tb2
+ON tb1.Id = tb2.CustomersId
+WHERE tb2.Id is Null;
+
+--Method 2
 select Name as Customers from Customers left join Orders on Customers.Id = Orders.CustomerId where Orders.CustomerId is Null;
