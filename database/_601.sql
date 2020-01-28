@@ -6,7 +6,7 @@
 --For example, the table stadium:
 --
 --+------+------------+-----------+
---| id   | date       | people    |
+--| id   | visit_date       | people    |
 --+------+------------+-----------+
 --| 1    | 2017-01-01 | 10        |
 --| 2    | 2017-01-02 | 109       |
@@ -32,6 +32,20 @@
 --Note:
 --Each day only have one row record, and the dates are increasing with id increasing.
 
+select distinct t1.*
+from stadium t1, stadium t2, stadium t3
+where t1.people >= 100 and t2.people >= 100 and t3.people >= 100
+and
+(
+	  (t1.id - t2.id = 1 and t1.id - t3.id = 2 and t2.id - t3.id =1)  -- t1, t2, t3
+    or
+    (t2.id - t1.id = 1 and t2.id - t3.id = 2 and t1.id - t3.id =1) -- t2, t1, t3
+    or
+    (t3.id - t2.id = 1 and t2.id - t1.id =1 and t3.id - t1.id = 2) -- t3, t2, t1
+)
+order by t1.id;
+
+
 SELECT s1.* FROM stadium AS s1, stadium AS s2, stadium as s3
     WHERE
     ((s1.id + 1 = s2.id
@@ -47,4 +61,4 @@ SELECT s1.* FROM stadium AS s1, stadium AS s2, stadium as s3
     AND s2.people>=100
     AND s3.people>=100
 
-    GROUP BY s1.id
+    GROUP BY s1.id;

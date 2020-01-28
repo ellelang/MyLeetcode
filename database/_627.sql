@@ -22,6 +22,10 @@
 --| 3  | C    | f   | 5500   |
 --| 4  | D    | m   | 500    |
 
+update Salary
+  SET sex = (IF(sex = 'f','m','f'));
+
+
 --solution 1:
 update salary
 set sex = CHAR(ASCII('f') ^ ASCII('m') ^ ASCII(sex));
@@ -32,4 +36,3 @@ set sex = case sex
     when 'm' then 'f'
     else 'm'
     end;
-

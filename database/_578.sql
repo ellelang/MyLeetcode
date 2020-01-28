@@ -25,6 +25,12 @@
 --Explanation:
 --question 285 has answer rate 1/1, while question 369 has 0/1 answer rate, so output 285.
 --Note: The highest answer rate meaning is: answer number's ratio in show number in the same question.
+SELECT question_id survey_log
+FROM survey_log
+GROUP BY question_id
+ORDER BY COUNT(answer_id) DESC
+LIMIT 1; 
+
 
 SELECT question_id AS 'survey_log' FROM survey_log GROUP BY question_id ORDER BY
 COUNT(answer_id) / COUNT(case when survey_log.action =

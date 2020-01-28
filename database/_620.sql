@@ -23,6 +23,15 @@
 --|   1     | War       |   great 3D   |   8.9     |
 --+---------+-----------+--------------+-----------+
 
+SELECT *
+FROM cinema
+WHERE mod(id,2) = 1
+AND description != 'boring'
+ORDER BY rating DESC;
+
+
+
+
 select id, movie, description, rating
 from cinema where mod (id, 2) = 1
 and description not like 'boring'

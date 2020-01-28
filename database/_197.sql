@@ -17,4 +17,7 @@
 -- +----+
 
 
-select w1.Id from Weather w1, Weather w2 where w1.Temperature > w2.Temperature and to_days(w1.Date) - to_days(w2.date) = 1;
+SELECT tb1.Id
+FROM Weather as tb1, Weather as tb2
+Where tb1. Temperature > tb2. Temperature AND
+to_days(tb1.RecordDate) - to_days(tb2.Recorddate) = 1;

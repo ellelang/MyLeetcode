@@ -30,6 +30,19 @@
 --
 --Note:
 --The students should not be counted duplicate in each course.
+SELECT class
+FROM courses
+GROUP BY class
+HAVING count (DISTINCT(student)) >= 5;
+
+-- SQL Syntax running priority
+-- FROM --> on-->JOIN --> WHERE --> GROUP BY --> WITH --> HAVING --> SELECT --> DISTINCT --> ORDER BY
+
+
+
+
+
+
 
 select class from courses
 group by class

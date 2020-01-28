@@ -1,5 +1,6 @@
 --569. Median Employee Salary
--- The Employee table holds all employees. The employee table has three columns: Employee Id, Company Name, and Salary.
+-- The Employee table holds all employees. The employee table has three columns:
+--Employee Id, Company Name, and Salary.
 --
 --+-----+------------+--------+
 --|Id   | Company    | Salary |
@@ -23,7 +24,8 @@
 --|17   | C          | 65     |
 --+-----+------------+--------+
 --
---Write a SQL query to find the median salary of each company. Bonus points if you can solve it without using any built-in SQL functions.
+--Write a SQL query to find the median salary of each company.
+--Bonus points if you can solve it without using any built-in SQL functions.
 --
 --+-----+------------+--------+
 --|Id   | Company    | Salary |
@@ -34,6 +36,30 @@
 --|9    | B          | 1154   |
 --|14   | C          | 2645   |
 --+-----+------------+--------+
+
+SELECT Id, Company, Median(Salary)
+FROM employees
+GROUP BY Company
+
+SELECT
+    tb1.id,
+    tb1.company,
+    tb1.salary
+FROM
+    Employee as tb1 LEFT JOIN Employee as tb2 ON
+    tb1.company = tb2.company
+GROUP BY tb1.id
+HAVING
+    ABS(SUM(CASE
+            WHEN tb1.salary > tb2.salary THEN -1   --小于当前
+            WHEN tb1.salary < tb2.salary THEN 1   --大于当前  相互cancel out
+            WHEN tb1.salary = tb2.salary AND tb1.id < tb2.id THEN 1
+            WHEN tb1.salary = tb2.salary AND tb1.id > tb2.id THEN -1 --相等时按id大小归+-
+            ELSE 0 END)) <= 1 --必须添加else 0否则单个records的情况会返回空表
+ORDER BY
+    tb1.company, tb1.salary
+
+
 
 select Id, Company, Salary from
 (
