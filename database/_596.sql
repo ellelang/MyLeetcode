@@ -34,7 +34,8 @@ SELECT class
 FROM courses
 GROUP BY class
 HAVING count (DISTINCT(student)) >= 5;
-
+--这道题还有个小陷阱，- -
+--会有重复的records，不能直接用count(1)
 -- SQL Syntax running priority
 -- FROM --> on-->JOIN --> WHERE --> GROUP BY --> WITH --> HAVING --> SELECT --> DISTINCT --> ORDER BY
 

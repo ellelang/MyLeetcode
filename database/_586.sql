@@ -16,6 +16,15 @@
 
 
 SELECT customer_number
-FROM orders 
+FROM orders
 GROUP BY customer_number
-ORDER BY COUNT(*) DESC LIMIT 1;
+ORDER BY COUNT(1) DESC LIMIT 1;
+
+SELECT customer_number
+FROM orders
+GROUP BY customer_number
+HAVING COUNT(1) = (SELECT COUNT(1)
+                   FROM orders
+                   GROUP BY customer_number
+                   ORDER BY COUNT(1) DESC
+                   LIMIT 1)

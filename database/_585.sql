@@ -42,6 +42,21 @@
 --
 --So, the result is the sum of TIV_2016 of the first and last record, which is 45.
 
+SELECT
+    SUM(TIV_2016) TIV_2016
+FROM
+    insurance
+WHERE
+    PID IN (SELECT distinct a.PID
+                  FROM insurance a CROSS JOIN insurance b ON
+                  a.PID <> b.PID
+                  WHERE a.TIV_2015 = b.TIV_2015)
+    AND
+    PID NOT IN (SELECT distinct a.PID
+                  FROM insurance a CROSS JOIN insurance b ON
+                  a.PID <> b.PID
+                  WHERE a.LAT = b.LAT AND a.LON = b.LON)
+
 select sum(TIV_2016) as TIV_2016
 from insurance a where
 (

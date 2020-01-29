@@ -20,6 +20,16 @@
 --The seat_id is an auto increment int, and free is bool ('1' means free, and '0' means occupied.).
 --Consecutive available seats are more than 2(inclusive) seats consecutively available.
 
+SELECT DISTINCT a.seat_id              -- 4前后座都空 会被选中2次 需去重
+FROM
+    cinema a JOIN cinema b ON
+    ABS(a.seat_id - b.seat_id) = 1 AND -- 前座和后座
+    a.free = 1 AND
+    b.free = 1
+ORDER BY a.seat_id
+
+
+
 select c.seat_id from cinema c where c.free = 1
 and
 (

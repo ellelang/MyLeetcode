@@ -29,3 +29,13 @@
 --The divisor (total number of requests) could be '0'
 --if the table friend_request is empty.
 --So, we have to utilize ifnull to deal with this special case.
+
+SELECT
+ROUND(
+    IFNULL(
+        (SELECT COUNT(distinct requester_id, accepter_id)
+         FROM request_accepted)/
+        (SELECT COUNT(distinct sender_id, send_to_id)
+         FROM friend_request)
+    ,0)
+,2) accept_rate
