@@ -38,6 +38,41 @@
 --
 --With he same formula for the average salary comparison in February, the result is 'same' since both the department '1' and '2' have the same average salary with the company, which is 7000.
 
+--思路：本来用窗口函数可以省很多事，可惜leetcode的环境mysql版本太低。 1. subquery 1 取出每月各部门平均薪资 2. subquery 2 取出每月公司平均薪资 3. Join 1 and 2 on 月份 4. 选出pay_month列，department_id列，comparison列用CASE语句生成
+
+SELECT
+    dep.pay_month,
+    dep.department_id,
+    (CASE
+     WHEN dep.mean_sal > com.mean_sal THEN "higher"
+     WHEN dep.mean_sal < com.mean_sal THEN "lower"
+     ELSE "same"
+     END) comparison
+FROM
+    (SELECT
+        DATE_FORMAT(pay_date, '%Y-%m') pay_month,
+        e.department_id,
+        AVG(s.amount) mean_sal
+    FROM
+        salary s JOIN employee e ON
+        s.employee_id = e.employee_id
+    GROUP BY
+        DATE_FORMAT(pay_date, '%Y-%m'),
+        e.department_id) as dep  -- subquery 1
+        LEFT JOIN
+    (SELECT
+        DATE_FORMAT(pay_date, '%Y-%m') pay_month,
+        AVG(s.amount) mean_sal
+    FROM
+        salary s JOIN employee e ON
+        s.employee_id = e.employee_id
+    GROUP BY
+        DATE_FORMAT(pay_date, '%Y-%m')) as com --subquery 2
+        ON dep.pay_month = com.pay_month
+ORDER BY
+    dep.department_id
+
+
 SELECT d1.pay_month, d1.department_id,
 CASE WHEN d1.department_avg > c1.company_avg THEN 'higher'
      WHEN d1.department_avg < c1.company_avg THEN 'lower'

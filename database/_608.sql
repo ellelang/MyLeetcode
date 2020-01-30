@@ -31,16 +31,36 @@
 --Node '3', '4' and '5' is Leaf node, because they have parent node and they don't have child node.
 --
 --And here is the image of the sample tree as below:
---			  1
---			/   \
+--
+--                          1
+--                        /   \
 --                      2       3
 --                    /   \
 --                  4       5
+
 --Note
 --
 --If there is only one node on the tree, you only need to output its root attributes.
 
 --credit: https://leetcode.com/articles/tree-node/#approach-i-using-union-accepted
+
+SELECT
+    id,
+    (CASE
+     WHEN p_id IS NULL THEN "Root"
+     WHEN id IN (SELECT DISTINCT p_id FROM tree) THEN "Inner"
+     ELSE "Leaf"
+     END) Type
+FROM tree
+
+
+
+
+
+
+
+
+
 select id, 'Root' as Type from tree where p_id is null
 union
 select id, 'Leaf' as Type from tree where id not in

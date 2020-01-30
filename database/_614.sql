@@ -26,6 +26,17 @@
 --Followee would not follow himself/herself in all cases.
 --Please display the result in follower's alphabet order.
 
+--思路：join, group by, count
+SELECT
+    a.follower follower, -- b.followeee didn't pass all cases
+    COUNT(DISTINCT b.follower) num
+FROM
+    follow a JOIN follow b ON
+    a.follower = b.followee
+GROUP BY
+    b.followee
+
+
 select f1.follower, count(distinct f2.follower) as num
 from follow f1
 inner join follow f2 on f1.follower = f2.followee

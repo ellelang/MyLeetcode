@@ -18,6 +18,22 @@
 
 --reference: https://discuss.leetcode.com/topic/92752/accept-solution and https://leetcode.com/articles/students-report-by-geography/#approach-using-session-variables-and-join-accepted
 
+SELECT America, Asia, Europe
+FROM(
+    SELECT continentorder,
+    MAX(CASE WHEN continent = 'America' THEN name END )AS America,
+    MAX(CASE WHEN continent = 'Europe' THEN name END )AS Europe,
+    MAX(CASE WHEN continent = 'Asia' THEN name END )AS Asia
+    FROM (
+        SELECT *,
+        ROW_NUMBER()OVER(PARTITION BY continent ORDER BY name) AS continentorder
+        FROM student
+    ) AS SOURCE
+    GROUP BY continentorder
+)temp
+
+
+
 set @a = 0;
 set @b = 0;
 set @c = 0;
