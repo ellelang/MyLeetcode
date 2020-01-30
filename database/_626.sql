@@ -36,9 +36,10 @@
 --ELSE result 4
 --END
 
-SELECT (CASE WHEN mod(id, 2) = 1 AND id = counts THEN id
-             WHEN mod(id, 2) = 1 AND id != counts THEN id + 1
-             ELSE id - 1
+SELECT (CASE
+  WHEN mod(id, 2) = 1 AND id = counts THEN id
+  WHEN mod(id, 2) = 1 AND id != counts THEN id + 1
+  ELSE id - 1
 END) AS id, student
 FROM seat, (SELECT count(*) AS counts FROM seat) AS counts
 ORDER BY id;

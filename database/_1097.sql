@@ -1,0 +1,38 @@
+-- 1097.(Hard) Game Play Analysis V
+-- 求每天(若有)的 new install数 以及 次日留存率
+--
+-- Activity table:
+-- +-----------+-----------+------------+--------------+
+-- | player_id | device_id | event_date | games_played |
+-- +-----------+-----------+------------+--------------+
+-- | 1         | 2         | 2016-03-01 | 5            |
+-- | 1         | 2         | 2016-03-02 | 6            |
+-- | 2         | 3         | 2017-06-25 | 1            |
+-- | 3         | 1         | 2016-03-01 | 0            |
+-- | 3         | 4         | 2016-07-03 | 5            |
+-- +-----------+-----------+------------+--------------+
+-- ​
+-- Result table:
+-- +------------+----------+----------------+
+-- | install_dt | installs | Day1_retention |
+-- +------------+----------+----------------+
+-- | 2016-03-01 | 2        | 0.50           |
+-- | 2017-06-25 | 1        | 0.00           |
+-- +------------+----------+----------------+
+
+SELECT
+    install_dt,
+    COUNT(player_id) installs,
+    ROUND(COUNT(retention)/COUNT(player_id),2) Day1_retention  --次日有记录的数量/当日新id总数=留存率
+FROM
+    (
+    SELECT a.player_id, a.install_dt, b.event_date retention -- id, 首次安装日, 次日的记录
+    FROM
+        (SELECT player_id, MIN(event_date) install_dt   --subquery 1 取每个id的首次安装日
+        FROM Activity
+        GROUP BY player_id) a LEFT JOIN Activity b ON   --sq1左连原表，求首次安装后次日的登陆情况
+            a.player_id = b.player_id AND
+            a.install_dt + 1=b.event_date
+    ) AS tmp
+GROUP BY
+    install_dt
