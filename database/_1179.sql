@@ -44,18 +44,19 @@
 -- Write your MySQL query statement below
 
 --group by solution
-select id,
-max(case when month = 'Jan' then revenue else null end) as 'Jan_Revenue',
-max(case when month = 'Feb' then revenue else null end) as 'Feb_Revenue',
-max(case when month = 'Mar' then revenue else null end) as 'Mar_Revenue',
-max(case when month = 'Apr' then revenue else null end) as 'Apr_Revenue',
-max(case when month = 'May' then revenue else null end) as 'May_Revenue',
-max(case when month = 'Jun' then revenue else null end) as 'Jun_Revenue',
-max(case when month = 'Jul' then revenue else null end) as 'Jul_Revenue',
-max(case when month = 'Aug' then revenue else null end) as 'Aug_Revenue',
-max(case when month = 'Sep' then revenue else null end) as 'Sep_Revenue',
-max(case when month = 'Oct' then revenue else null end) as 'Oct_Revenue',
-max(case when month = 'Nov' then revenue else null end) as 'Nov_Revenue',
-max(case when month = 'Dec' then revenue else null end) as 'Dec_Revenue'
-from Department
-group by id
+SELECT /* Just select everything you see in expected result  using CASE WHEN contidition THEN statement END*/
+	id,
+	SUM(CASE WHEN month = 'Jan' THEN revenue END) AS Jan_Revenue,
+	SUM(CASE WHEN month = 'Feb' THEN revenue END) AS Feb_Revenue,
+	SUM(CASE WHEN month = 'Mar' THEN revenue END) AS Mar_Revenue,
+	SUM(CASE WHEN month = 'Apr' THEN revenue END) AS Apr_Revenue,
+	SUM(CASE WHEN month = 'May' THEN revenue END) AS May_Revenue,
+	SUM(CASE WHEN month = 'Jun' THEN revenue END) AS Jun_Revenue,
+	SUM(CASE WHEN month = 'Jul' THEN revenue END) AS Jul_Revenue,
+	SUM(CASE WHEN month = 'Aug' THEN revenue END) AS Aug_Revenue,
+	SUM(CASE WHEN month = 'Sep' THEN revenue END) AS Sep_Revenue,
+	SUM(CASE WHEN month = 'Oct' THEN revenue END) AS Oct_Revenue,
+	SUM(CASE WHEN month = 'Nov' THEN revenue END) AS Nov_Revenue,
+	SUM(CASE WHEN month = 'Dec' THEN revenue END) AS Dec_Revenue
+FROM Department
+GROUP BY id
