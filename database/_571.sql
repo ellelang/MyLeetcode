@@ -24,8 +24,8 @@
 select avg(number) median
 from numbers tb1
 where tb1.frequency >= abs(
-  (select sum(Frequency) from Numbers where Number<=tb1.number) -
-  (select sum(Frequency) from Numbers where Number>=tb1.number))
+  (select sum(Frequency) from numbers where Number<=tb1.number) -
+  (select sum(Frequency) from numbers where Number>=tb1.number))
 --https://www.zepl.com/viewer/notebooks/bm90ZTovL2RhdGFnZWVraW5tZS9hNzdlM2ZjNTYyNGE0Y2ZjOWJlY2ZmYjQzYzk3MTU3My9ub3RlLmpzb24
 
 select FORMAT(avg(n.Number),4)*1.0 as median
