@@ -1,3 +1,74 @@
+  
+n = 3 # i row
+m = 3 # j, column
+# Returns length of the longest path beginning with mat[i][j].  
+# This function mainly uses lookup table dp[n][n]
+"""
+Find the longest path in a matrix with given constraints
+Given a n*n matrix where all numbers are distinct, find the maximum length path 
+(starting from any cell) 
+such that all cells along the path are in increasing order with a difference of 1.
+We can move in 4 directions from a given cell (i, j), i.e., we can move to (i+1, j)
+ or (i, j+1) or (i-1, j) or (i, j-1) with the condition that the adjacent cells 
+ have a difference of 1.
+"""  
+def findLongestFromACell(i, j, mat, dp): 
+    # Base case  
+    if (i<0 or i>= n or j<0 or j>= m): 
+        return 0
+  
+    # If this subproblem is already solved  
+    if (dp[i][j] != -1):  
+        return dp[i][j] 
+  
+    # To store the path lengths in all the four directions 
+    x, y, z, w = -1, -1, -1, -1
+  
+    # Since all numbers are unique and in range from 1 to n * n,  
+    # there is atmost one possible direction from any cell  
+    if (j<m-1 and (ord(mat[i][j]) +1== ord(mat[i][j + 1]))): 
+        x = 1 + findLongestFromACell(i, j + 1, mat, dp) 
+  
+    if (j>0 and (ord(mat[i][j]) +1 == ord(mat[i][j-1]))):  
+        y = 1 + findLongestFromACell(i, j-1, mat, dp) 
+  
+    if (i>0 and (ord(mat[i][j]) +1 == ord(mat[i-1][j]))): 
+        z = 1 + findLongestFromACell(i-1, j, mat, dp) 
+  
+    if (i<n-1 and (ord(mat[i][j]) +1 == ord(mat[i + 1][j]))): 
+        w = 1 + findLongestFromACell(i + 1, j, mat, dp) 
+  
+    # If none of the adjacent fours is one greater we will take 1 
+    # otherwise we will pick maximum from all the four directions 
+    dp[i][j] = max(x, max(y, max(z, max(w, 1)))) 
+    return dp[i][j] 
+  
+  
+# Returns length of the longest path beginning with any cell  
+def finLongestOverAll(mat): 
+    result = 1 # Initialize result  
+  
+    # Create a lookup table and fill all entries in it as -1  
+    dp =[[-1 for j in range(m)]for i in range(n)] 
+  
+    # Compute longest path beginning from all cells  
+    for i in range(n): 
+        for j in range(n): 
+            if (dp[i][j] == -1): 
+                findLongestFromACell(i, j, mat, dp) 
+            # Update result if needed  
+            result = max(result, dp[i][j]);  
+    return result 
+  
+# Driver program  
+mat = [[1, 2, 9],  
+    [5, 3, 8], 
+    [4, 6, 7]]  
+print("Length of the longest path is ", finLongestOverAll(mat))
+
+n = 3
+m = 4
+
 # Driver program  
 mat = [['A','B','H','F'],  
        [ 'C','C','D','G'],  
@@ -76,7 +147,8 @@ def getLen(mat, s):
 
 print (getLen(mat, 'B'))  
 
-
+4321//10
+len(str(432))
 nums = [\
   [3,4,5],\
   [3,2,6],\
@@ -106,3 +178,7 @@ class Solution:
         return ret   
 A = Solution()
 A.longestIncreasingPath(nums)
+
+
+
+
