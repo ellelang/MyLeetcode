@@ -1,5 +1,5 @@
 import pandas as pd 
-from collections import defaultdict   
+
 #No  Name    ID  Parent_Id
 #1   Tom     211 111
 #2   Galie   209 111
@@ -49,6 +49,7 @@ def find_parent(x):
 find_parent(209)
 
 #####################
+from collections import defaultdict   
 #edges = [['1', '3'], ['2', '3'], ['3', '6'], ['5', '6'],['5','7']]
 edges = [['1', '2'], ['2', '4'], ['1', '11'], ['4', '11']]
 G = defaultdict(list)
@@ -81,11 +82,31 @@ def DFS(G,v,seen=None,path=None):
             paths.append(tuple(t_path))
             paths.extend(DFS(G, t, seen[:], t_path))
     if not paths:
-        return -1
+        return '-1'
     else:
         return paths
         
-    
+G = defaultdict(list)
+for (s,t) in edges:
+    G[s].append(t)
+    G[t].append(s)
+
+DFS(G, '2')    
+
+
+def DFS(G,v,seen=None,path=None):
+    if seen is None: seen = []
+    if path is None: path = [v]
+
+    seen.append(v)
+
+    paths = []
+    for t in G[v]:
+        if t not in seen:
+            t_path = path + [t]
+            paths.append(tuple(t_path))
+            paths.extend(DFS(G, t, seen[:], t_path))
+    return paths
 
 
 # Define graph by edges
@@ -98,7 +119,7 @@ for (s,t) in edges:
     G[t].append(s)
 
 # Run DFS, compute metrics
-all_paths = DFS(G, 8)
+all_paths = DFS(G, '2')
 max_len   = max(len(p) for p in all_paths)
 max_paths = [p for p in all_paths if len(p) == max_len]
 min(min(max_paths))
@@ -113,89 +134,106 @@ print("Longest Path Length:")
 print(max_len)
 #############
 edges = [[1,3],[2,3],[3,6],[5,6],[5,7]]
-child = {}
-for p,c in p_c:
-        child.setdefault(p,[]).append(c)
-child.get(3)
-child[1]
-def earlies_p(dataset):
-    child = {}
-    for p,c in dataset:
-        child.setdefault(p,[]).append(c)
-    roots = set(child) - set(c for cc in child.values() for c in cc)
-    
-    return roots
-earlies_p(p_c)
-
-dataset_pc = pd.DataFrame(p_c, columns=['Parent','Child'])
-#parent_dict = dict(zip(dataset_pc.Child, dataset_pc.Parent))
-dict_pc = dict(p_c)
-
-cp_dict = dict(zip(dataset_pc.Child, dataset_pc.Parent))
-
-
-def find_parent(x):
-    ListOfAncestor = list ()
-    ListOfChild =  list()
-    #dict_pc = dict(data)
-    for item in dict_pc.items():
-        ListOfChild.append(item[1])
-        if item[1] == x:
-            ListOfAncestor.append(item[0])
-    return ListOfAncestor
-
-
-find_parent(6)
-       
-def earlies_p(dataset,x):
-    child = {}
-    dict_pc = dict(dataset)
-    for p,c in dataset:
-        child.setdefault(p,[]).append(c)
-    roots = set(child) - set(c for cc in child.values() for c in cc)
-    return roots
-            
-earlies_p(p_c,6)
-
-def findp(x):
-    for item in dict_pc.items():
-        if item[1] == x and item[0] in roots:
-            return item[0]
-        else:
-            x = item[0]
-            return findp(x)
-            
-findp(6)    
 
 
 
+# Python3 implementation of the above approach 
+v = [[] for i in range(100)] 
+  
+# An utility function to add an edge in an 
+# undirected graph. 
+def addEdge(x, y): 
+    v[x].append(y) 
+    v[y].append(x) 
+  
+# A function to print the path between 
+# the given pair of nodes. 
+def printPath(stack): 
+    for i in range(len(stack) - 1): 
+        print(stack[i], end = " -> ") 
+    print(stack[-1]) 
+  
+# An utility function to do 
+# DFS of graph recursively 
+# from a given vertex x. 
+def DFS(vis, x, y, stack): 
+    stack.append(x) 
+    if (x == y): 
+  
+        # print the path and return on 
+        # reaching the destination node 
+        printPath(stack) 
+        return
+    vis[x] = True
+  
+    # A flag variable to keep track 
+    # if backtracking is taking place 
+    flag = 0
+    if (len(v[x]) > 0): 
+        for j in v[x]: 
+              
+            # if the node is not visited 
+            if (vis[j] == False): 
+                DFS(vis, j, y, stack) 
+                flag = 1
+  
+    if (flag == 0): 
+  
+        # If backtracking is taking 
+        # place then pop 
+        del stack[-1] 
+  
+# A utility function to initialise 
+# visited for the node and call 
+# DFS function for a given vertex x. 
+def DFSCall(x, y, n, stack): 
+      
+    # visited array 
+    vis = [0 for i in range(n + 1)] 
+  
+    #memset(vis, false, sizeof(vis)) 
+  
+    # DFS function call 
+    DFS(vis, x, y, stack) 
+  
+# Driver Code 
+n = 10
+stack = [] 
+  
+# Vertex numbers should be from 1 to 9. 
+addEdge(1, 2) 
+addEdge(1, 3) 
+addEdge(2, 4) 
+addEdge(2, 5) 
+addEdge(2, 6) 
+addEdge(3, 7) 
+addEdge(3, 8) 
+addEdge(3, 9) 
+  
+# Function Call 
+DFSCall(4, 8, n, stack) 
 
-dict_pc.items()
-ListOfChild =  list()
-for item in dict_pc.items():
-    ListOfChild.append(item[1])
+#############
+graph = {'A': set(['B', 'C']),
+         'B': set(['A', 'D', 'E']),
+         'C': set(['A', 'F']),
+         'D': set(['B']),
+         'E': set(['B', 'F']),
+         'F': set(['C', 'E'])}
 
 
-    
 
-#########
-def find_parent(data,x):
-    dict_pc = dict(data)
-    value = dict_pc.get(x, None)
-    if value is None:
-        return ""
-    else:
-        return find_parent(value)
 
-find_parent(p_c,6)
+def dfs_paths(graph, start, goal):
+    stack = [(start, [start])]
+    visited = set()
+    while stack:
+        (vertex, path) = stack.pop()
+        if vertex not in visited:
+            if vertex == goal:
+                return path
+            visited.add(vertex)
+            for neighbor in graph[vertex]:
+                stack.append((neighbor, path + [neighbor]))
 
-def find_key(d, value):
-    for k,v in d.items():
-        if isinstance(v, dict):
-            p = find_key(v, value)
-            if p:
-                return [k] + p
-        elif v == value:
-            return [k]
-
-find_key(dict_pc, 5)
+print (dfs_paths(graph, 'A', 'F'))
