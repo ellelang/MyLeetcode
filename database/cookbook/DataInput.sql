@@ -1,6 +1,7 @@
 SHOW databases;
 USE cookbook;
 SHOW TABLES;
+DROP TABLE IF EXISTS mail;
 CREATE TABLE mail
 (
   t       DATETIME,    # when message was sent
@@ -31,6 +32,8 @@ INSERT INTO mail (t,srchost,srcuser,dsthost,dstuser,size)
     ('2014-05-19 22:21:51','saturn','gene','venus','gene',23992)
 ;
 SHOW TABLES;
+
+DROP TABLE IF EXISTS sales_region;
 CREATE TABLE sales_region
 (
   region_id INT UNSIGNED NOT NULL,
@@ -38,6 +41,7 @@ CREATE TABLE sales_region
   PRIMARY KEY(region_id)
 );
 
+DROP TABLE IF EXISTS sales_volume;
 CREATE TABLE sales_volume
 (
   region_id  INT UNSIGNED NOT NULL,
@@ -60,6 +64,7 @@ INSERT INTO sales_volume (region_id, year, quarter, volume) VALUES
 (5, 2014, 1, 18000),
 (5, 2014, 2, 32000);
 
+DROP TABLE IF EXISTS weatherdata;
 CREATE TABLE weatherdata
 (
 station INT UNSIGNED NOT NULL,
@@ -68,6 +73,8 @@ value FLOAT,
 PRIMARY KEY (station, type)
 );
 
+
+DROP TABLE IF EXISTS states;
 CREATE TABLE states
 (
   statename       VARCHAR(20),  # sender (source user and host)
@@ -138,3 +145,143 @@ INSERT INTO states (statename,shortname,statehood,records) VALUES
 SHOW TABLES;
 
 
+DROP TABLE IF EXISTS tax;
+CREATE TABLE tax
+(
+  statename       VARCHAR(20),  # sender (source user and host)
+  rate          INT
+);
+
+INSERT INTO tax (statename,rate) VALUES
+('AK',0.03),
+('AL',0.03),
+('AR',0.06),
+('AZ',0.02),
+('CA',0.02),
+('CO',0.05),
+('CT',0.06),
+('DE',0.08),
+('FL',0.02),
+('GA',0.06),
+('HI',0.02),
+('IA',0.02),
+('ID',0.05),
+('IL',0.08),
+('IN',0.07),
+('KS',0.08),
+('KY',0.02),
+('LA',0.03),
+('MA',0.01),
+('MD',0.05),
+('ME',0.02),
+('MI',0.07),
+('MN',0.06),
+('MO',0.02),
+('MS',0.05),
+('MT',0.06),
+('NC',0.08),
+('ND',0.09),
+('NE',0.04),
+('NH',0.01),
+('NJ',0.05),
+('NM',0.02),
+('NV',0.04),
+('NY',0.09),
+('OH',0.07),
+('OK',0.07),
+('OR',0.02),
+('PA',0.01),
+('RI',0.07),
+('SC',0.02),
+('SD',0.08),
+('TN',0.07),
+('TX',0.1),
+('UT',0.07),
+('VA',0.07),
+('VT',0.01),
+('WA',0.07),
+('WI',0.03),
+('WV',0.02),
+('WY',0.03);
+
+DROP TABLE IF EXISTS city;
+CREATE TABLE city
+(
+  state      VARCHAR(20),  # sender (source user and host)
+  capital     VARCHAR(20),
+  center      VARCHAR(20)
+);
+
+INSERT INTO city (state,capital, center) VALUES
+('Alabama','Montgomery','Birmingham'),
+('Alaska','Juneau','Anchorage'),
+('Arizona','Phoenix','Phoenix'),
+('Arkansas','Little Rock','Little Rock'),
+('California','Sacramento','Los Angeles'),
+('Colorado','Denver','Denver'),
+('Connecticut','Hartford','Bridgeport'),
+('Delaware','Dover','Wilmington'),
+('Florida','Tallahassee','Jacksonville'),
+('Georgia','Atlanta','Atlanta'),
+('Hawaii','Honolulu','Honolulu'),
+('Idaho','Boise','Boise'),
+('Illinois','Springfield','Chicago'),
+('Indiana','Indianapolis','Indianapolis'),
+('Iowa','Des Moines','Des Moines'),
+('Kansas','Topeka','Wichita'),
+('Kentucky','Frankfort','Louisville'),
+('Louisiana','Baton Rouge','New Orleans'),
+('Maine','Augusta','Portland'),
+('Maryland','Annapolis','Baltimore'),
+('Massachusetts','Boston','Boston'),
+('Michigan','Lansing','Detroit'),
+('Minnesota','St. Paul','Minneapolis'),
+('Mississippi','Jackson','Jackson'),
+('Missouri','Jefferson City','Kansas City'),
+('Montana','Helena','Billings'),
+('Nebraska','Lincoln','Omaha'),
+('Nevada','Carson City','Las Vegas'),
+('New Hampshire','Concord','Manchester'),
+('New Jersey','Trenton','Newark'),
+('New Mexico','Santa Fe','Albuquerque'),
+('New York','Albany','New York City'),
+('North Carolina','Raleigh','Charlotte'),
+('North Dakota','Bismarck','Fargo'),
+('Ohio','Columbus','Columbus'),
+('Oklahoma','Oklahoma City','Oklahoma City'),
+('Oregon','Salem','Portland'),
+('Pennsylvania','Harrisburg','Philadelphia'),
+('Rhode Island','Providence','Providence'),
+('South Carolina','Columbia','Columbia'),
+('South Dakota','Pierre','Sioux Falls'),
+('Tennessee','Nashville','Memphis'),
+('Texas','Austin','Houston'),
+('Utah','Salt Lake City','Salt Lake City'),
+('Vermont','Montpelier','Burlington'),
+('Virginia','Richmond','Virginia Beach'),
+('Washington','Olympia','Seattle'),
+('West Virginia','Charleston','Charleston'),
+('Wisconsin','Madison','Milwaukee'),
+('Wyoming','Cheyenne','Cheyenne');
+
+DROP TABLE IF EXISTS winter;
+CREATE TABLE winter (
+city VARCHAR(20),
+degree INT
+);
+INSERT INTO winter (city,degree) VALUES
+('Mulder, Mark',21),
+('Clemens, Roger',20),
+('Moyer, Jamie',20),
+('Garcia, Freddy',18),
+('Hudson, Tim',18),
+('Abbott, Paul',17),
+('Mays, Joe',17),
+('Mussina, Mike',17),
+('Sabathia, C.C.',17),
+('Zito, Barry',17),
+('Buehrle, Mark',16),
+('Milton, Eric',15),
+('Pettitte, Andy',15),
+('Radke, Brad',15),
+('Sele, Aaron',15);

@@ -32,6 +32,6 @@ city.to_csv(data_folder/'cityinput.txt',sep=',', index=False, header=False)
 winter = pd.read_csv(data_folder/"al_winner-2001.txt",sep='\t',header = None)
 winter.head()
 winter.columns = ['State','Degree']
-winter['State'] = winter['State'].apply(lambda x: "('" + str(x) + "'")
+winter['State'] = winter['State'].apply(lambda x: "'" + str(x) + "'")
 winter['Degree'] = winter['Degree'].apply(lambda x: str(x) + ")")	
 winter.to_csv(data_folder/'winterinput.txt',sep=',', index=False, header=False)
