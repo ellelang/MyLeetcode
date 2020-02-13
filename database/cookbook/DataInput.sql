@@ -285,3 +285,38 @@ INSERT INTO winter (city,degree) VALUES
 ('Pettitte, Andy',15),
 ('Radke, Brad',15),
 ('Sele, Aaron',15);
+
+DROP TABLE IF EXISTS standings1;
+CREATE TABLE standings1
+(
+  team  CHAR(20), # team name
+  wins  INT,      # number of wins
+  losses  INT     # number of losses
+);
+
+# Load Northern League final 1902 standings into the table
+
+INSERT INTO standings1 (team, wins, losses) VALUES ('Winnipeg',37,20);
+INSERT INTO standings1 (team, wins, losses) VALUES ('Crookston',31,25);
+INSERT INTO standings1 (team, wins, losses) VALUES ('Fargo',30,26);
+INSERT INTO standings1 (team, wins, losses) VALUES ('Grand Forks',28,26);
+INSERT INTO standings1 (team, wins, losses) VALUES ('Devils Lake',19,31);
+INSERT INTO standings1 (team, wins, losses) VALUES ('Cavalier',15,32);
+
+
+DROP TABLE IF EXISTS weekday;
+#@ _CREATE_TABLE_
+CREATE TABLE weekday
+(
+  day ENUM('Sunday','Monday','Tuesday','Wednesday',
+           'Thursday','Friday','Saturday')
+);
+#@ _CREATE_TABLE_
+
+# insert one record for each day of the week (insert in random order)
+
+INSERT INTO weekday (day) VALUES('Monday'),('Friday'),
+('Tuesday'),('Sunday'),('Thursday'),('Saturday'),('Wednesday');
+
+
+
