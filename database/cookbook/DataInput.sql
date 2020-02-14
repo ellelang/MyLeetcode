@@ -77,10 +77,10 @@ PRIMARY KEY (station, type)
 DROP TABLE IF EXISTS states;
 CREATE TABLE states
 (
-  statename       VARCHAR(20),  # sender (source user and host)
-  shortname       VARCHAR(20),
+  name       VARCHAR(20),  # sender (source user and host)
+  abbrev       VARCHAR(20),
   statehood       DATETIME,  
-  records          INT
+  pop          INT
 );
 
 
@@ -90,7 +90,7 @@ SET GLOBAL local_infile = 1;
 SHOW GLOBAL VARIABLES LIKE 'local_infile';
 
 #LOAD DATA LOCAL INFILE '/Users/langzx/Desktop/states.txt' INTO TABLE states;
-INSERT INTO states (statename,shortname,statehood,records) VALUES
+INSERT INTO states (name,abbrev,statehood,pop) VALUES
 ('Alabama','AL','1819-12-14',4779736),
 ('Alaska','AK','1959-01-03',710231),
 ('Arizona','AZ','1912-02-14',6392017),
@@ -149,7 +149,7 @@ DROP TABLE IF EXISTS tax;
 CREATE TABLE tax
 (
   statename       VARCHAR(20),  # sender (source user and host)
-  rate          INT
+  rate            DOUBLE
 );
 
 INSERT INTO tax (statename,rate) VALUES
@@ -203,6 +203,7 @@ INSERT INTO tax (statename,rate) VALUES
 ('WI',0.03),
 ('WV',0.02),
 ('WY',0.03);
+SELECT * FROM tax;
 
 DROP TABLE IF EXISTS city;
 CREATE TABLE city
@@ -318,5 +319,238 @@ CREATE TABLE weekday
 INSERT INTO weekday (day) VALUES('Monday'),('Friday'),
 ('Tuesday'),('Sunday'),('Thursday'),('Saturday'),('Wednesday');
 
+show tables;
+SELECT * FROM tax;
 
 
+DROP TABLE IF EXISTS movies_actors;
+#@ _CREATE_MOVIE_ACTOR_TABLE_
+CREATE TABLE movies_actors
+(
+  year  YEAR NOT NULL,        # year movie was released
+  movie VARCHAR(80) NOT NULL, # movie name
+  actor VARCHAR(60) NOT NULL  # actor name
+);
+#@ _CREATE_MOVIE_ACTOR_TABLE_
+
+INSERT INTO movies_actors (year,movie,actor)
+  VALUES
+ (2005,'Kingdom of Heaven','Liam Neeson')
+,(2005,'Kingdom of Heaven','Orlando Bloom')
+,(1997,'The Fifth Element','Bruce Willis')
+,(1997,'The Fifth Element','Gary Oldman')
+,(1997,'The Fifth Element','Ian Holm')
+,(1999,'The Phantom Menace','Ewan McGregor')
+,(1999,'The Phantom Menace','Liam Neeson')
+,(2001,'The Fellowship of the Ring','Ian McKellen')
+,(2001,'The Fellowship of the Ring','Ian Holm')
+,(2001,'The Fellowship of the Ring','Orlando Bloom')
+,(2001,'The Fellowship of the Ring','Elijah Wood')
+,(2010,'Red','Helen Mirren')
+,(2010,'Red','Bruce Willis')
+,(2011,'Unknown','Diane Kruger')
+,(2011,'Unknown','Liam Neeson')
+,(1995,'Twelve Monkeys','Brad Pitt')
+,(1995,'Twelve Monkeys','Bruce Willis')
+,(1995,'Rob Roy','Brian Cox')
+,(1995,'Rob Roy','Liam Neeson')
+,(2005,'Batman Begins','Liam Neeson')
+,(2005,'Batman Begins','Christian Bale')
+,(2000,'X-Men 2','Halle Berry')
+,(2000,'X-Men 2','Hugh Jackman')
+,(2000,'X-Men 2','Ian McKellen')
+,(2000,'X-Men 2','Brian Cox')
+,(2004,'Troy','Brad Pitt')
+,(2004,'Troy','Brian Cox')
+,(2004,'Troy','Diane Kruger')
+,(2004,'Troy','Eric Bana')
+,(2004,'Troy','Orlando Bloom')
+,(2004,'Troy','Sean Bean')
+,(2001,'Swordfish','Halle Berry')
+,(2001,'Swordfish','Hugh Jackman')
+,(2011,'Hanna','Cate Blanchett')
+,(2011,'Hanna','Eric Bana')
+,(2005,'The Island','Ewan McGregor')
+,(2005,'The Island','Michael Clarke Duncan')
+,(2005,'The Island','Sean Bean')
+;
+
+
+DROP TABLE IF EXISTS artist;
+#@ _CREATE_TABLE_ARTIST_
+CREATE TABLE artist
+(
+  a_id  INT UNSIGNED NOT NULL AUTO_INCREMENT, # artist ID
+  name  VARCHAR(30) NOT NULL,                 # artist name
+  PRIMARY KEY (a_id),
+  UNIQUE (name)
+);
+#@ _CREATE_TABLE_ARTIST_
+
+INSERT INTO artist (a_id, name) VALUES
+  (1, 'Da Vinci'),
+  (2, 'Monet'),
+  (3, 'Van Gogh'),
+  (4, 'Renoir')
+;
+
+SELECT * FROM artist;
+
+DROP TABLE IF EXISTS painting;
+#@ _CREATE_TABLE_PAINTING_
+CREATE TABLE painting
+(
+  a_id  INT UNSIGNED NOT NULL,                # artist ID
+  p_id  INT UNSIGNED NOT NULL AUTO_INCREMENT, # painting ID
+  title VARCHAR(100) NOT NULL,                # title of painting
+  state VARCHAR(2) NOT NULL,                  # state where purchased
+  price INT UNSIGNED,                         # purchase price (dollars)
+  INDEX (a_id),
+  PRIMARY KEY (p_id)
+);
+#@ _CREATE_TABLE_PAINTING_
+
+# Use INSERT INTO ... SELECT form to get proper artist ID corresponding
+# to artist name
+
+INSERT INTO painting (a_id,P_id,title,state,price) VALUES
+ (1, 1, 'The Last Supper', 'IN', 34),
+ (1, 2,  'Mona Lisa', 'MI', 87 ),
+ (3, 3, 'Starry Night', 'KY', 48),
+ (3, 4, 'The Potato Eaters', 'KY', 67),
+ (4, 5, 'Les Deux Soeurs', 'NE', 64);
+
+SELECT * FROM painting;
+
+DROP TABLE IF EXISTS driver_log;
+#@ _CREATE_TABLE_
+CREATE TABLE driver_log
+(
+  rec_id    INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  name      VARCHAR(20) NOT NULL,
+  trav_date DATE NOT NULL,
+  miles     INT NOT NULL,
+  PRIMARY KEY (rec_id)
+);
+#@ _CREATE_TABLE_
+
+# When updating these dates, pick year and month so that first one
+# falls on a Wednesday. Update the others by the same amount.
+
+INSERT INTO driver_log (rec_id, name,trav_date,miles)
+  VALUES
+    (1, 'Ben','2014-07-30',152),
+    (2, 'Suzi','2014-07-29',391),
+    (3, 'Henry','2014-07-29',300),
+    (4, 'Henry','2014-07-27',96),
+    (5, 'Ben','2014-07-29',131),
+    (6, 'Henry','2014-07-26',115),
+    (7, 'Suzi','2014-08-02',502),
+    (8, 'Henry','2014-08-01',197),
+    (9, 'Ben','2014-08-02',79),
+    (10, 'Henry','2014-07-30',203)
+;
+CREATE TABLE dates (d DATE);
+INSERT INTO dates (d)
+VALUES('2014-07-26'),('2014-07-27'),('2014-07-28'),
+('2014-07-29'),('2014-07-30'),('2014-07-31'),
+('2014-08-01'),('2014-08-02');
+
+
+DROP TABLE IF EXISTS time_val;
+CREATE TABLE time_val
+(
+  t1  TIME,
+  t2  TIME
+);
+
+INSERT INTO time_val (t1,t2) VALUES
+('15:00:00','15:00:00'),
+('05:01:30','02:30:20'),
+('12:30:20','17:30:45');
+
+SELECT * FROM time_val;
+
+
+DROP TABLE IF EXISTS expt;
+#@ _CREATE_TABLE_
+CREATE TABLE expt
+(
+  subject VARCHAR(10),
+  test    VARCHAR(5),
+  score INT
+);
+#@ _CREATE_TABLE_
+
+INSERT INTO expt (subject,test,score) VALUES
+('Jane','A',47),
+('Jane','B',50),
+('Jane','C',NULL),
+('Jane','D',NULL),
+('Marvin','A',52),
+('Marvin','B',45),
+('Marvin','C',53),
+('Marvin','D',NULL);
+
+
+
+DROP TABLE IF EXISTS testscore;
+#@ _CREATE_TABLE_
+CREATE TABLE testscore
+(
+  subject INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  age     INT UNSIGNED NOT NULL,
+  sex     ENUM('M','F') NOT NULL,
+  score   INT,
+  PRIMARY KEY (subject)
+);
+#@ _CREATE_TABLE_
+
+INSERT INTO testscore (age,sex,score)
+  VALUES
+  (5,'M',5),
+  (5,'M',4),
+  (5,'F',6),
+  (5,'F',7),
+  (6,'M',8),
+  (6,'M',9),
+  (6,'F',4),
+  (6,'F',6),
+  (7,'M',8),
+  (7,'M',6),
+  (7,'F',9),
+  (7,'F',7),
+  (8,'M',9),
+  (8,'M',6),
+  (8,'F',7),
+  (8,'F',10),
+  (9,'M',9),
+  (9,'M',7),
+  (9,'F',10),
+  (9,'F',9)
+;
+
+DROP TABLE IF EXISTS ttscore;
+#@ _CREATE_TABLE_
+CREATE TABLE ttscore
+(
+  subject INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  score   INT,
+  PRIMARY KEY (subject)
+);
+#@ _CREATE_TABLE_
+
+INSERT INTO ttscore (score)
+  VALUES
+  (38),
+  (NULL),
+  (47),
+  (NULL),
+  (37),
+  (45),
+  (54),
+  (NULL),
+  (40),
+  (49);
+  
+  SELECT * FROM ttscore;
