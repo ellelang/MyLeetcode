@@ -265,12 +265,12 @@ INSERT INTO city (state,capital, center) VALUES
 ('Wisconsin','Madison','Milwaukee'),
 ('Wyoming','Cheyenne','Cheyenne');
 
-DROP TABLE IF EXISTS winter;
-CREATE TABLE winter (
-city VARCHAR(20),
-degree INT
+DROP TABLE IF EXISTS al_winner;
+CREATE TABLE al_winner (
+name VARCHAR(20),
+wins INT
 );
-INSERT INTO winter (city,degree) VALUES
+INSERT INTO al_winner (name,wins) VALUES
 ('Mulder, Mark',21),
 ('Clemens, Roger',20),
 ('Moyer, Jamie',20),
@@ -554,3 +554,147 @@ INSERT INTO ttscore (score)
   (49);
   
   SELECT * FROM ttscore;
+  
+  DROP TABLE IF EXISTS die;
+#@ _CREATE_TABLE_DIE_
+CREATE TABLE die (n INT);
+#@ _CREATE_TABLE_DIE_
+
+# Insert values 1 through 6, corresponding to faces of a die
+
+INSERT INTO die (n) VALUES(1),
+(2),
+(3),
+(4),
+(5),
+(6);
+
+DROP TABLE IF EXISTS trip_log;
+#@ _CREATE_TABLE_
+CREATE TABLE trip_log
+(
+  seq   INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  city  VARCHAR(30) NOT NULL,   # location of stop
+  t     DATETIME NOT NULL,      # time of stop
+  miles INT UNSIGNED NOT NULL,  # miles traveled so far
+  fuel  DECIMAL(6,3),           # gas used between citees
+  PRIMARY KEY (seq)
+);
+#@ _CREATE_TABLE_
+
+INSERT INTO trip_log (t, city, miles, fuel)
+VALUES
+  ('2013-10-23 05:00:00', 'San Antonio, TX', 0, 0),
+  ('2013-10-23 09:10:00', 'Dallas, TX', 263, 11.375),
+  ('2013-10-23 13:40:00', 'Benton, AR', 566, 12.398),
+  ('2013-10-23 16:51:00', 'Memphis, TN', 745, 6.820),
+  ('2013-10-23 19:06:00', 'Portageville, MO', 745+133, 7.007),
+  ('2013-10-23 23:16:00', 'Champaign, IL', 745+419, 11.354),
+  ('2013-10-24 03:27:00', 'Madison, WI', 745+667, 13.016)
+;
+
+DROP TABLE IF EXISTS player_stats;
+#@ _CREATE_TABLE_
+CREATE TABLE player_stats
+(
+  id    INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (id),
+  date  DATE NOT NULL,          # date of cumulative stats
+  ab    INT UNSIGNED NOT NULL,  # total at-bats as of date
+  h     INT UNSIGNED NOT NULL   # total hits as of date
+);
+#@ _CREATE_TABLE_
+
+INSERT INTO player_stats (date, ab, h)
+VALUES
+  ('2013-04-30', 0, 0),
+  ('2013-05-31', 38, 13),
+  ('2013-06-30', 109, 31),
+  ('2013-07-31', 196, 49),
+  ('2013-08-31', 304, 98)
+;
+
+DROP TABLE IF EXISTS rainfall;
+#@ _CREATE_TABLE_
+CREATE TABLE rainfall
+(
+  date    DATE NOT NULL,
+  precip  FLOAT(10,2) NOT NULL
+);
+#@ _CREATE_TABLE_
+
+INSERT INTO rainfall (date, precip)
+  VALUES
+    ('2014-06-01', 1.5),
+    ('2014-06-02', 0),
+    ('2014-06-03', 0.5),
+    ('2014-06-04', 0),
+    ('2014-06-05', 1.0)
+;
+
+ROP TABLE IF EXISTS marathon;
+#@ _CREATE_TABLE_
+CREATE TABLE marathon
+(
+  stage INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  km    INT UNSIGNED NOT NULL,  # length of stage, in km
+  t     TIME NOT NULL,          # elapsed time for stage
+  PRIMARY KEY (stage)
+);
+#@ _CREATE_TABLE_
+
+INSERT INTO marathon (km, t)
+VALUES
+  (5,'00:15:00'),
+  (7,'00:19:30'),
+  (9,'00:29:20'),
+  (5,'00:17:50')
+;
+
+
+DROP TABLE IF EXISTS standings1;
+CREATE TABLE standings1
+(
+  team  CHAR(20), # team name
+  wins  INT,      # number of wins
+  losses  INT     # number of losses
+);
+
+# Load Northern League final 1902 standings into the table
+
+INSERT INTO standings1 (team, wins, losses) VALUES
+ ('Winnipeg',37,20),
+ ('Crookston',31,25),
+('Fargo',30,26),
+('Grand Forks',28,26),
+ ('Devils Lake',19,31),
+ ('Cavalier',15,32);
+ 
+ DROP TABLE IF EXISTS standings2;
+CREATE TABLE standings2
+(
+  half      INT,      # which half of season
+  division  CHAR(10), # league division
+  team      CHAR(20), # team name
+  wins      INT,      # number of wins
+  losses    INT       # number of losses
+);
+INSERT INTO standings2 (half, division, team, wins, losses)
+  VALUES (1,'Eastern','St. Paul',24,18),
+(1,'Eastern','Thunder Bay',18,24),
+ (1,'Eastern','Duluth-Superior',17,24),
+(1,'Eastern','Madison',15,27),
+ (1,'Western','Winnipeg',29,12),
+(1,'Western','Sioux City',28,14),
+(1,'Western','Fargo-Moorhead',21,21),
+ (1,'Western','Sioux Falls',15,27),
+ (2,'Eastern','Duluth-Superior',22,20),
+ (2,'Eastern','St. Paul',21,21),
+ (2,'Eastern','Madison',19,23),
+ (2,'Eastern','Thunder Bay',18,24),
+ (2,'Western','Fargo-Moorhead',26,16),
+ (2,'Western','Winnipeg',24,18),
+ (2,'Western','Sioux City',22,20),
+ (2,'Western','Sioux Falls',16,26);
+
+SELECT * FROM standings1;

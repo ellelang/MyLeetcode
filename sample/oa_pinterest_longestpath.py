@@ -1,6 +1,6 @@
   
 n = 3 # i row
-m = 3 # j, column
+m = 4 # j, column
 # Returns length of the longest path beginning with mat[i][j].  
 # This function mainly uses lookup table dp[n][n]
 """
@@ -20,45 +20,52 @@ def findLongestFromACell(i, j, mat, dp):
     # If this subproblem is already solved  
     if (dp[i][j] != -1):  
         return dp[i][j] 
-  
     # To store the path lengths in all the four directions 
     x, y, z, w = -1, -1, -1, -1
   
     # Since all numbers are unique and in range from 1 to n * n,  
     # there is atmost one possible direction from any cell  
-    if (j<m-1 and (ord(mat[i][j]) +1== ord(mat[i][j + 1]))): 
+    if (j<m-1 and (abs(ord(mat[i][j]) - ord(mat[i][j + 1]))==1)): 
         x = 1 + findLongestFromACell(i, j + 1, mat, dp) 
+
   
-    if (j>0 and (ord(mat[i][j]) +1 == ord(mat[i][j-1]))):  
+    if (j>0 and (abs(ord(mat[i][j])- ord(mat[i][j-1])) ==1)):  
         y = 1 + findLongestFromACell(i, j-1, mat, dp) 
+        
   
-    if (i>0 and (ord(mat[i][j]) +1 == ord(mat[i-1][j]))): 
+    if (i>0 and (abs(ord(mat[i][j]) - ord(mat[i-1][j]))==1)): 
         z = 1 + findLongestFromACell(i-1, j, mat, dp) 
+        
   
-    if (i<n-1 and (ord(mat[i][j]) +1 == ord(mat[i + 1][j]))): 
+    if (i<n-1 and (abs(ord(mat[i][j]) - ord(mat[i + 1][j]))==1)): 
         w = 1 + findLongestFromACell(i + 1, j, mat, dp) 
+        
   
     # If none of the adjacent fours is one greater we will take 1 
     # otherwise we will pick maximum from all the four directions 
-    dp[i][j] = max(x, max(y, max(z, max(w, 1)))) 
-    return dp[i][j] 
+    dp[i][j] = max(x, max(y, max(z, max(w, 1))))
+
+    return dp[i][j]
+    
   
   
 # Returns length of the longest path beginning with any cell  
 def finLongestOverAll(mat): 
     result = 1 # Initialize result  
-  
+    
     # Create a lookup table and fill all entries in it as -1  
     dp =[[-1 for j in range(m)]for i in range(n)] 
-  
     # Compute longest path beginning from all cells  
     for i in range(n): 
         for j in range(n): 
             if (dp[i][j] == -1): 
-                findLongestFromACell(i, j, mat, dp) 
+                findLongestFromACell(i, j, mat, dp)
+                #p.append(findLongestFromACell(i, j, mat, dp)[1])
+                #path.append(findLongestFromACell(i, j, mat, dp) )
             # Update result if needed  
-            result = max(result, dp[i][j]);  
-    return result 
+            
+            result = max(result, dp[i][j]) 
+    return result
   
 # Driver program  
 mat = [[1, 2, 9],  
@@ -179,6 +186,237 @@ class Solution:
 A = Solution()
 A.longestIncreasingPath(nums)
 
+n = 3
+# Returns length of the longest path beginning with mat[i][j].  
+# This function mainly uses lookup table dp[n][n]  
+def findLongestFromACell(i, j, mat, dp): 
+    # Base case  
+    if (i<0 or i>= n or j<0 or j>= n): 
+        return 0
+  
+    # If this subproblem is already solved  
+    if (dp[i][j] != -1):  
+        return dp[i][j] 
+  
+    # To store the path lengths in all the four directions 
+    x, y, z, w = -1, -1, -1, -1
+  
+    # Since all numbers are unique and in range from 1 to n * n,  
+    # there is atmost one possible direction from any cell  
+    if (j<n-1 and ((mat[i][j] +1) == mat[i][j + 1])): 
+        x = 1 + findLongestFromACell(i, j + 1, mat, dp) 
+        
+  
+    if (j>0 and (mat[i][j] +1 == mat[i][j-1])):  
+        y = 1 + findLongestFromACell(i, j-1, mat, dp) 
+        
+  
+    if (i>0 and (mat[i][j] +1 == mat[i-1][j])): 
+        z = 1 + findLongestFromACell(i-1, j, mat, dp) 
+        
+  
+    if (i<n-1 and (mat[i][j] +1 == mat[i + 1][j])): 
+        w = 1 + findLongestFromACell(i + 1, j, mat, dp) 
+        
+  
+    # If none of the adjacent fours is one greater we will take 1 
+    # otherwise we will pick maximum from all the four directions 
+    dp[i][j] = max(x, max(y, max(z, max(w, 1)))) 
+    return dp[i][j] 
+  
+  
+# Returns length of the longest path beginning with any cell  
+def finLongestOverAll(mat): 
+    result = 1 # Initialize result  
+  
+    # Create a lookup table and fill all entries in it as -1  
+    dp =[[-1 for i in range(n)]for i in range(n)] 
+  
+    # Compute longest path beginning from all cells  
+    for i in range(n): 
+        for j in range(n): 
+            if (dp[i][j] == -1): 
+                findLongestFromACell(i, j, mat, dp) 
+            # Update result if needed  
+            result = max(result, dp[i][j]);  
+    return result 
+  
+# Driver program  
+mat = [[1, 2, 9],  
+    [5, 3, 8], 
+    [4, 6, 7]]  
+print("Length of the longest path is ", finLongestOverAll(mat)) 
+
+
+class Point: 
+    def __init__(self, x, y): 
+        self.x = x 
+        self.y = y 
+# (i, j) corresponds to tail of the snake 
+def findPath(grid, mat, i, j): 
+    path = list() 
+  
+    pt = Point(i, j) 
+    path.append(pt) 
+  
+    while (grid[i][j] != 0): 
+        if (i > 0 and grid[i][j]-1 == grid[i-1][j]): 
+            pt = Point(i-1, j) 
+            path.append(pt) 
+            i -= 1
+        elif (j > 0 and grid[i][j]-1 == grid[i][j-1]): 
+            pt = Point(i, j-1) 
+            path.append(pt) 
+            j -= 1
+        elif (i > 0 and i<n and grid[i][j]-1 == grid[i+1][j]): 
+            pt = Point(i+1, j) 
+            path.append(pt) 
+            i += 1
+        elif (j > 0 and j<m and grid[i][j]-1 == grid[i][j+1]): 
+            pt = Point(i+1, j) 
+            path.append(pt) 
+            i += 1
+    return path 
+
+def findSnakeSequence(mat): 
+  
+    # table to store results of subproblems 
+    # initialize by 0 
+    lookup = [[0 for i in range(m)] for j in range(n)] 
+  
+    # stores maximum length of Snake sequence 
+    max_len = 0
+  
+    # store cordinates to snake's tail 
+    max_row = 0
+    max_col = 0
+  
+    # fill the table in bottom-up fashion 
+    for i in range(n): 
+        for j in range(m): 
+            # do except for (0, 0) cell 
+            if (i or j): 
+                # look above 
+                if (i > 0 and
+                    abs(mat[i-1][j] - mat[i][j]) == 1): 
+                    lookup[i][j] = max(lookup[i][j], 
+                                       lookup[i-1][j] + 1) 
+                    if (max_len < lookup[i][j]): 
+                        max_len = lookup[i][j] 
+                        max_row = i 
+                        max_col = j 
+  
+                # look left 
+                if (j > 0 and
+                    abs(mat[i][j-1] - mat[i][j]) == 1): 
+                    lookup[i][j] = max(lookup[i][j], 
+                                       lookup[i][j-1] + 1) 
+                    if (max_len < lookup[i][j]): 
+                        max_len = lookup[i][j] 
+                        max_row = i 
+                        max_col = j 
+  
+    print("Maximum length of Snake sequence is:", max_len) 
+  
+    # find maximum length Snake sequence path 
+    path = findPath(lookup, mat, max_row, max_col) 
+  
+    print("Snake sequence is:") 
+    for ele in reversed(path): 
+        print(mat[ele.x][ele.y], 
+              " (", ele.x, ", ", ele.y, ")", sep = "") 
+  
+# Driver code 
+mat = [[9, 6, 5, 2], 
+       [8, 7, 6, 5], 
+       [7, 8, 1, 6]] 
+findSnakeSequence(mat)   
+
+
+m = [['A','B','H','F'],  
+       [ 'C','C','D','G'],  
+       [ 'A','B','D','F']] 
+
+n = 3
+m = 4
+
+def findSnakeSequence1(mat): 
+  
+    # table to store results of subproblems 
+    # initialize by 0 
+    lookup = [[0 for i in range(m)] for j in range(n)] 
+  
+    # stores maximum length of Snake sequence 
+    max_len = 0
+  
+    # store cordinates to snake's tail 
+    max_row = 0
+    max_col = 0
+  
+    # fill the table in bottom-up fashion 
+    for i in range(n): 
+        for j in range(m): 
+            # do except for (0, 0) cell 
+            if (i or j): 
+                # look above 
+                if (i > 0 and
+                    abs((mat[i-1][j]) - (mat[i][j])) == 1): 
+                    lookup[i][j] = max(lookup[i][j], 
+                                       lookup[i-1][j] + 1) 
+                    if (max_len < lookup[i][j]): 
+                        max_len = lookup[i][j] 
+                        max_row = i 
+                        max_col = j 
+  
+                # look left 
+                if (j > 0 and
+                    abs((mat[i][j-1]) - (mat[i][j])) == 1): 
+                    lookup[i][j] = max(lookup[i][j], 
+                                       lookup[i][j-1] + 1) 
+                    if (max_len < lookup[i][j]): 
+                        max_len = lookup[i][j] 
+                        max_row = i 
+                        max_col = j 
+                
+                # look below 
+                if (i > 0 and i < n-1 and
+                    abs((mat[i+1][j]) - (mat[i][j])) == 1): 
+                    lookup[i][j] = max(lookup[i][j], 
+                                       lookup[i+1][j] + 1) 
+                    if (max_len < lookup[i][j]): 
+                        max_len = lookup[i][j] 
+                        max_row = i 
+                        max_col = j 
+  
+                # look right 
+                if (j > 0 and j<m-1 and
+                    abs((mat[i][j+1]) - (mat[i][j])) == 1): 
+                    lookup[i][j] = max(lookup[i][j], 
+                                       lookup[i][j+1] + 1) 
+                    if (max_len < lookup[i][j]): 
+                        max_len = lookup[i][j] 
+                        max_row = i 
+                        max_col = j 
+  
+    print("Maximum length of Snake sequence is:", max_len) 
+  
+    # find maximum length Snake sequence path 
+    path = findPath(lookup, mat, max_row, max_col) 
+  
+    print("Snake sequence is:") 
+    for ele in reversed(path): 
+        print(mat[ele.x][ele.y], 
+              " (", ele.x, ", ", ele.y, ")", sep = "")
+
+# Driver code 
+mat = [[9, 6, 5, 2], 
+       [8, 7, 6, 5], 
+       [7, 8, 1, 6]] 
 
 
 
+m = [['A','B','H','F'],  
+       [ 'C','C','D','G'],  
+       [ 'A','B','D','F']] 
+
+findSnakeSequence1(m)   
