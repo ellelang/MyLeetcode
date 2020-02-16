@@ -632,7 +632,7 @@ INSERT INTO rainfall (date, precip)
     ('2014-06-05', 1.0)
 ;
 
-ROP TABLE IF EXISTS marathon;
+DROP TABLE IF EXISTS marathon;
 #@ _CREATE_TABLE_
 CREATE TABLE marathon
 (
@@ -698,3 +698,26 @@ INSERT INTO standings2 (half, division, team, wins, losses)
  (2,'Western','Sioux Falls',16,26);
 
 SELECT * FROM standings1;
+
+
+ DROP TABLE IF EXISTS order_tab;
+CREATE TABLE order_tab
+(
+  order_id      INT,     
+  user_no       INT, 
+  amount      INT, 
+  create_date   DATETIME  
+);
+
+INSERT INTO order_tab (order_id, user_no, amount, create_date)
+VALUES
+(1, 001,100, '2018-01-01 00:00:00'),
+(2, 001,300, '2018-01-02 00:00:00'),
+(3, 001,500, '2018-01-02 00:00:00'),
+(4, 001,800, '2018-01-03 00:00:00'),
+(5, 001,900, '2018-01-04 00:00:00'),
+(6, 002,500, '2018-01-03 00:00:00'),
+(7, 002,600, '2018-01-04 00:00:00'),
+(8, 002,300, '2018-01-10 00:00:00'),
+(9, 002,800, '2018-01-16 00:00:00'),
+(10, 002,800, '2018-01-22 00:00:00');
