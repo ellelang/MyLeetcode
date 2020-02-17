@@ -25,3 +25,11 @@ insert into Movie_Rating (movie_id, user_id, rating, created_at) values ('2', '3
 insert into Movie_Rating (movie_id, user_id, rating, created_at) values ('3', '1', '3', '2020-02-22');
 insert into Movie_Rating (movie_id, user_id, rating, created_at) values ('3', '2', '4', '2020-02-25');
 
+SELECT
+         rating,
+         movie_id,
+         ROW_NUMBER() OVER w AS 'row_number',
+         RANK()       OVER w AS 'rank',
+         DENSE_RANK() OVER w AS 'dense_rank'
+       FROM movie_rating
+       WINDOW w AS (ORDER BY rating);
