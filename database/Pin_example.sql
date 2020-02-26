@@ -23,6 +23,19 @@ INSERT INTO api_request (visit_date, user_id, device_type, request_count)
     ('2019-07-12','4','ipad',30),
     ('2019-09-12','1','iphone',18),
     ('2019-05-12','3','iphone',22);
+    
+
+select w.user_id, w.visit_date, count(distinct w.visit_date)
+from web_request w
+left join
+(select *
+from api_request a
+where a.device_type = 'iphone' and a.visit_date >= '2019-01-01') t
+on w.user_id = t.user_id and w.visit_date = t.visit_date
+where t.device_type is not null
+group by w.visit_date;
+
+
 
 select visit_date, count(distinct user_id) from
 (
