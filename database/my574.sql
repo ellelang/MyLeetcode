@@ -13,6 +13,15 @@ insert into Vote (id, CandidateId) values ('3', '3');
 insert into Vote (id, CandidateId) values ('4', '2');
 insert into Vote (id, CandidateId) values ('5', '5');
 
+SELECT Name 
+from Candidate
+where id =  
+(select CandidateId from
+(select CandidateId, count(CandidateId) as vote_cnt
+from vote
+group by CandidateId
+order by vote_cnt desc
+LIMIT 1)t);
 
 
 SELECT c.Name, c.Id, v.CandidateId

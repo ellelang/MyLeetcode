@@ -14,7 +14,21 @@ Select E.Id, E.Name as Employee, M.Name as Manager
 FROM Employee E
 INNER JOIN employee M
 ON E.ManagerId = M.Id)sub
+group by manager
 having count(Manager) >=5;
+
+SELECT ManagerId
+From Employee 
+Group By ManagerId;
+
+select manager
+from(
+Select E.Id, E.Name as Employee, M.Name as Manager
+FROM Employee E
+JOIN employee M
+ON E.ManagerId = M.Id) sub
+group by manager
+having count(manager)>=5;
 
 Select E.Id, E.Name as Employee, M.Name as Manager
 FROM Employee E

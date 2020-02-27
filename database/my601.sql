@@ -9,6 +9,11 @@ insert into stadium (id, visit_date, people) values ('6', '2017-01-06', '1455');
 insert into stadium (id, visit_date, people) values ('7', '2017-01-07', '199');
 insert into stadium (id, visit_date, people) values ('8', '2017-01-08', '188');
 
+select *
+from
+    stadium s0 left join stadium s1
+    on s1.id >= s0.id and s1.id <= s0.id + 2;
+
 
 select s0.id as s0_id, s1.id as id, s1.visit_date as visit_date, s1.people as people,
     min(s1.people) over(partition by s0.id) as min_people,

@@ -5,7 +5,7 @@ insert into Person (Id, Email) values (1, 'a@b.com');
 insert into Person (Id, Email) values (2, 'c@d.com');
 insert into Person (Id, Email) values (3, 'a@b.com');
 
-
+# Write a SQL query to find all duplicate emails in a table named 
 #select * from Person;
 SELECT Email
 FROM Person

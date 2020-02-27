@@ -11,7 +11,12 @@ insert into Employee (Id, Month, Salary) values ('3', '3', '60');
 insert into Employee (Id, Month, Salary) values ('1', '4', '60');
 insert into Employee (Id, Month, Salary) values ('3', '4', '70');
 
+SELECT Id, Month, Salary, MAX(Month) OVER(PARTITION BY Id) AS recent_month
+FROM Employee;
 
+SELECT Id, Month, 
+SUM(Salary) OVER(PARTITION BY Id ORDER BY Month ROWS BETWEEN 2 PRECEDING AND CURRENT ROW) AS Salary
+FROM Employee;
 
 SELECT Id, Month, SUM(Salary) OVER(PARTITION BY Id ORDER BY Month ROWS BETWEEN 2 PRECEDING AND CURRENT ROW) AS Salary
 FROM 

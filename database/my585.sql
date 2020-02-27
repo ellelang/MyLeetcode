@@ -8,7 +8,8 @@ insert into insurance (PID, TIV_2015, TIV_2016, LAT, LON) values ('4', '10', '40
 
 select count(pid) over (partition by lat,lon) ctl, 
 count(pid) over (partition by tiv_2015) ctt, 
-TIV_2016 from insurance;
+TIV_2016 
+from insurance;
 
 
 with cte1 as (

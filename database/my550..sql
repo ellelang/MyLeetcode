@@ -14,14 +14,12 @@ datediff(event_date, lag(event_date,1) over w) as dd
 from activity
 window w as (partition by player_id order by event_date)
 )
-select round(cast(count(distinct player_id) as float)/(select count(distinct player_id) from tmp), 2) as fraction
+select round(cast(count(distinct player_id) as float)/(select count(distinct player_id) from tmp) , 2) as fraction
 from tmp
 where dd = 1;
 
 
-
 select player_id, event_date, 
-row_number() over w as rnk,
 datediff(event_date, lag(event_date,1) over w) as dd
 from activity
 window w as (partition by player_id order by event_date);

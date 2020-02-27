@@ -23,6 +23,7 @@ insert into Users (Users_Id, Banned, Role) values (12, 'No', 'driver');
 insert into Users (Users_Id, Banned, Role) values (13, 'No', 'driver');
 
 
+
 SELECT
     Request_at as 'Day',
     ROUND(CAST(SUM(CASE WHEN Status != 'completed' THEN 1 ELSE 0 END) AS FLOAT)/CAST(COUNT(*) AS FLOAT), 2) AS 'Cancellation Rate'    

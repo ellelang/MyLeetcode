@@ -14,7 +14,9 @@ DELETE FROM Person WHERE Id in
         on P1.Email=P2.Email
         WHERE P1.Id > P2.Id
     )As Temp_Table
-)
+);
 
- 
+   SELECT P1.Id FROM Person P1 join Person P2
+        on P1.Email=P2.Email
+        WHERE P1.Id > P2.Id;
 

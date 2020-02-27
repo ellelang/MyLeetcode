@@ -13,8 +13,16 @@ insert into Sales (seller_id, product_id, buyer_id, sale_date, quantity, price) 
 insert into Sales (seller_id, product_id, buyer_id, sale_date, quantity, price) values ('3', '3', '4', '2019-05-13', '2', '2800');
 
 
+
+select distinct s.buyer_id
+from sales s left join product p
+on s.product_id = p.product_id
+where p.product_name = 'S8' and s.buyer_id not in (select s1.buyer_id
+                                                  from Sales s1 join Product p1 on s1.product_id = p1.product_id
+                                                  where p1.product_name = 'iPhone');
+
 select distinct s.buyer_id
 from Sales s join Product p on s.product_id = p.product_id
 where p.product_name = 'S8' and s.buyer_id not in (select s1.buyer_id
                                                   from Sales s1 join Product p1 on s1.product_id = p1.product_id
-                                                  where p1.product_name = 'iPhone')
+                                                  where p1.product_name = 'iPhone');

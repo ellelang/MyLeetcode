@@ -13,6 +13,14 @@ insert into Sales (seller_id, product_id, buyer_id, sale_date, quantity, price) 
 insert into Sales (seller_id, product_id, buyer_id, sale_date, quantity, price) values ('3', '3', '4', '2019-05-13', '2', '2800');
 
 
+select  s.product_id, p.product_name
+from sales s
+left join product p
+on s.product_id = p.product_id
+group by p.product_id
+having sum(case when s.sale_date between '2019-01-01' and '2019-03-31'then 0 else 1 end ) = 0;
+
+
 select s.product_id, p.product_name, sum(case when s.sale_date > '2019-03-31' then 1
 else 0 end) as spring
 from Sales s 
