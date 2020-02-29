@@ -28,6 +28,8 @@ insert into Examinations (student_id, subject_name) values ('1', 'Math');
 
 # Write an SQL query to find the number of times each student attended each exam.
 #Order the result table by student_id and subject_name.
+select student_id, student_name, subject_name
+from students, subjects;
 
 
 with cte1 as

@@ -20,6 +20,22 @@ Truncate table Removals;
 insert into Removals (post_id, remove_date) values ('2', '2019-07-20');
 insert into Removals (post_id, remove_date) values ('3', '2019-07-18');
 
+with cte1
+as (select * from actions
+where extra = 'spam'),
+
+cte2 as
+(select sum(case when r.remove_date is null then 0 else 1 end )/count(cte1.action_date) as removerate
+from cte1
+left join removals r
+on cte1.post_id = r.post_id
+group by cte1.action_date)
+
+select round(avg(cte2.removerate)*100,2) as average_daily_percent 
+from cte2;
+
+
+
 select round(avg(remove_status)*100,2)  as average_daily_percent
 from (
 select post_id, action_date,remove_date, sum(case when remove_date is null Then 0 else 1 end)/count(*) as remove_status

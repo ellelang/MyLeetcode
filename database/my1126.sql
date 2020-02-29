@@ -10,6 +10,23 @@ insert into Events (business_id, event_type, occurences) values ('3', 'ads', '6'
 insert into Events (business_id, event_type, occurences) values ('1', 'page views', '3');
 insert into Events (business_id, event_type, occurences) values ('2', 'page views', '12');
 
+
+select * from events ;
+
+
+with cte1
+as (select event_type, avg(occurences) as avg_occ
+from events 
+group by event_type)
+
+select a.business_id
+from events a
+left join cte1 on 
+a.event_type = cte1.event_type
+where (a.occurences - cte1.avg_occ) > 0
+group by a.business_id
+having count(*) > 1;
+
 select a.business_id
 from events a
 join

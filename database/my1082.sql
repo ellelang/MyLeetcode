@@ -12,6 +12,14 @@ insert into Sales (seller_id, product_id, buyer_id, sale_date, quantity, price) 
 insert into Sales (seller_id, product_id, buyer_id, sale_date, quantity, price) values ('2', '2', '3', '2019-06-02', '1', '800');
 insert into Sales (seller_id, product_id, buyer_id, sale_date, quantity, price) values ('3', '3', '4', '2019-05-13', '2', '2800');
 
+SELECT *
+FROM SALES;
+
+SELECT seller_id
+FROM SALES
+GROUP BY seller_id
+having sum(price) >= ALL (SELECT SUM(price) from SALES GROUP BY seller_id);
+
 select  seller_id
 from sales
 group by seller_id 
