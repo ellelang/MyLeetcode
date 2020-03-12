@@ -1,4 +1,6 @@
-DROP TABLE IF EXISTS Customers ;
+USE LEETCODE;
+
+DROP TABLE IF EXISTS Customers;
 DROP TABLE IF EXISTS Contacts;
 DROP TABLE IF EXISTS Invoices;
 Create table If Not Exists Customers (customer_id int, customer_name varchar(20), email varchar(30));
