@@ -1,6 +1,8 @@
 SHOW databases;
 #CREATE DATABASE leetcode;
 USE leetcode;
+DROP TABLE IF EXISTS Departments;
+DROP TABLE IF EXISTS Students;
 Create table If Not Exists Departments (id int, name varchar(30));
 Create table If Not Exists Students (id int, name varchar(30), department_id int);
 Truncate table Departments;
@@ -19,8 +21,8 @@ insert into Students (id, name, department_id) values ('8', 'Jonathan', '7');
 insert into Students (id, name, department_id) values ('7', 'Daiana', '33');
 insert into Students (id, name, department_id) values ('11', 'Madelynn', '1');
 
-SELECT S.id, S.name
-FROM Students as S
-LEFT JOIN Departments as D
-ON S.department_id = D.id
-Where D.name is null;
+select t1.id, t1.name
+from students t1
+left join departments t2
+on t1.department_id = t2.id
+where t2.name is null;

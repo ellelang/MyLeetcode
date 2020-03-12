@@ -1,4 +1,5 @@
 USE LEETCODE;
+DROP TABLE IF EXISTS UserActivity;
 Create table If Not Exists UserActivity (username varchar(30), activity varchar(30), startDate date, endDate date);
 Truncate table UserActivity;
 insert into UserActivity (username, activity, startDate, endDate) values ('Alice', 'Travel', '2020-02-12', '2020-02-20');

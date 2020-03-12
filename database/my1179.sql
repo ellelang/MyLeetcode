@@ -7,6 +7,10 @@ insert into Department (id, revenue, month) values ('3', '10000', 'Feb');
 insert into Department (id, revenue, month) values ('1', '7000', 'Feb');
 insert into Department (id, revenue, month) values ('1', '6000', 'Mar');
 
+
+
+
+
 SELECT /* Just select everything you see in expected result  using CASE WHEN contidition THEN statement END*/
 	id, 
 	SUM(CASE WHEN month = 'Jan' THEN revenue END) AS Jan_Revenue,

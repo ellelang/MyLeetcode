@@ -9,6 +9,23 @@ insert into Delivery (delivery_id, customer_id, order_date, customer_pref_delive
 insert into Delivery (delivery_id, customer_id, order_date, customer_pref_delivery_date) values ('6', '2', '2019-08-11', '2019-08-13');
 insert into Delivery (delivery_id, customer_id, order_date, customer_pref_delivery_date) values ('7', '4', '2019-08-09', '2019-08-09');
 
+
+select round(sum(ifnull(order_date = customer_pref_delivery_date,0))/count(*)*100, 2)  as immediate_percentage 
+from(
+select t1.*, 
+row_number() over w as oder_rnk
+from Delivery t1
+window w as (partition by customer_id order by order_date))t
+where t.oder_rnk = 1
+;
+
+
+
+
+
+
+
+
 select round(sum(ifnull(order_date = customer_pref_delivery_date, 0))/count(*) * 100,2) as immediate_percentage
 from(
 select *,
