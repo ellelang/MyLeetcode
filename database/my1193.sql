@@ -7,12 +7,12 @@ insert into Transactions (id, country, state, amount, trans_date) values ('122',
 insert into Transactions (id, country, state, amount, trans_date) values ('123', 'US', 'approved', '2000', '2019-01-01');
 insert into Transactions (id, country, state, amount, trans_date) values ('124', 'DE', 'approved', '2000', '2019-01-07');
 
-
-select * 
-from transactions 
-sum (amount) over w as sum_
-window w as (partition by county order by left(trans_date, 7) );
-
+SELECT country, left(trans_date,7) as month_tr, 
+count(id) as total_cnt,sum(amount),
+sum(ifnull(state = 'approved',0)) as num_approve,
+sum(case when state = 'approved' then amount else 0 end) as approve_tran
+FROM Transactions
+group by country, left(trans_date,7);
 
 
 

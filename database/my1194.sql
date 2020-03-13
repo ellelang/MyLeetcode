@@ -19,6 +19,30 @@ insert into Matches (match_id, first_player, second_player, first_score, second_
 insert into Matches (match_id, first_player, second_player, first_score, second_score) values ('4', '40', '20', '5', '2');
 insert into Matches (match_id, first_player, second_player, first_score, second_score) values ('5', '35', '50', '1', '1');
 
+with cte1 as (
+select m1.first_player as id, sum(m1.first_score) as total_point
+from matches m1
+group by m1.first_player),
+cte2 as (
+select m2.second_player as id, sum(m2.second_score) as total_point
+from matches m2
+group by m2.second_player),
+
+cte3 as (
+(select id, total_point
+from cte1)
+union
+(select id, total_point 
+from cte2))
+
+select cte3.id, sum(cte3.total_point) as sum_total, p.group_id
+from cte3
+left join players p
+on cte3.id = p.player_id
+group by cte3.id;
+
+
+
 with cte1 
 as (select match_id, first_player, first_score from matches),
 cte2
