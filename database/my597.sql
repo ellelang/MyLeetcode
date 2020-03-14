@@ -27,4 +27,32 @@ right join friend_request b
 on a.requester_id=b.sender_id and a.accepter_id=b.send_to_id) c;
 
 
+# first one
+select round(coalesce(1.0* (select count(distinct requester_id, accepter_id) from request_accepted)/
+(select count(distinct sender_id, send_to_id) from friend_request), 0.0),2) as accept_rate;
 
+# second one
+select  coalesce(round(1.0*acnt/scnt,2),0.0) as accept_rate, b.smonth as month
+from
+(select count(distinct requester_id, accepter_id) as acnt, month(accept_date) as amonth
+from request_accepted
+group by 2) a
+join
+(select count(distinct sender_id, send_to_id) as scnt, month(request_date) as smonth
+from friend_request
+group by 2) b
+on a.amonth=b.smonth;
+
+# third one
+select round(coalesce(1.0*count(distinct requester_id, accepter_id)/count(distinct sender_id, send_to_id),0.0),2) as accept_rate, rate_date
+from
+(select distinct accept_date as rate_date
+from request_accepted
+union
+select distinct request_date as rate_date
+from friend_request) dt
+left join request_accepted ra
+on dt.rate_date >= ra.accept_date
+left join friend_request fr
+on dt.rate_date >= fr.request_date
+group by 2;

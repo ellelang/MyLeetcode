@@ -1,3 +1,4 @@
+use leetcode;
 DROP TABLE IF EXISTS Players;
 DROP TABLE IF EXISTS Matches;
 Create table If Not Exists Players (player_id int, group_id int);
@@ -23,6 +24,7 @@ with cte1 as (
 select m1.first_player as id, sum(m1.first_score) as total_point
 from matches m1
 group by m1.first_player),
+
 cte2 as (
 select m2.second_player as id, sum(m2.second_score) as total_point
 from matches m2
@@ -33,13 +35,19 @@ cte3 as (
 from cte1)
 union
 (select id, total_point 
-from cte2))
+from cte2)),
 
-select cte3.id, sum(cte3.total_point) as sum_total, p.group_id
+cte4 as
+(select cte3.id, sum(cte3.total_point) as sum_total, p.group_id,
+row_number() over (partition by p.group_id order by sum(cte3.total_point) desc) as rank_total
 from cte3
 left join players p
 on cte3.id = p.player_id
-group by cte3.id;
+group by cte3.id)
+
+select group_id, id as player_id
+from cte4
+where rank_total = 1;
 
 
 
