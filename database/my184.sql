@@ -12,6 +12,29 @@ Truncate table Department;
 insert into Department (Id, Name) values ('1', 'IT');
 insert into Department (Id, Name) values ('2', 'Sales');
 
+with cte1 as(
+SELECT e.*, d.Name as department_name
+FROM Employee e
+LEFT JOIN Department d
+on e.DepartmentId = d.Id),
+cte2 as(
+select cte1.*,
+dense_rank()over(partition by DepartmentId order by Salary DESC )as Salary_rank
+from cte1)
+
+select department_name, Name, Salary
+from cte2
+where Salary_rank = 1;
+
+
+
+
+
+
+
+
+
+
 Select D.Name, sub.Employee, sub.Salary
 FROM
 (Select DepartmentId,

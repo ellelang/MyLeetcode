@@ -2,6 +2,65 @@ SELECT score, COUNT(score) AS counts
 FROM testscore 
 GROUP BY score;
 
+SELECT score FROM testscore ORDER BY score LIMIT 18,1;
+
+SELECT score FROM testscore ORDER BY score LIMIT 18,2;
+
+
+SELECT t1.seq AS seq1, t2.seq AS seq2,
+t1.city AS city1, t2.city AS city2,
+t1.miles AS miles1, t2.miles AS miles2,
+t2.miles-t1.miles AS dist
+FROM trip_log AS t1 INNER JOIN trip_log AS t2
+ON t1.seq+1 = t2.seq
+ORDER BY t1.seq;
+
+SELECT score, COUNT(score) AS counts
+FROM testscore GROUP BY score;
+SELECT @test_n := count(score) from testscore;
+
+SELECT seq, city, miles FROM trip_log ORDER BY seq;
+SELECT date, precip FROM rainfall ORDER BY date;
+
+SELECT t1.date, t1.precip AS 'daily precip',
+SUM(t2.precip) AS 'cum. precip',
+COUNT(t2.precip) AS 'days elapsed',
+AVG(t2.precip) AS 'avg. precip'
+FROM rainfall AS t1 INNER JOIN rainfall AS t2
+ON t1.date >= t2.date
+GROUP BY t1.date;
+
+SELECT t1.date, t1.precip AS 'daily precip',
+SUM(t2.precip) AS 'cum. precip',
+DATEDIFF(MAX(t2.date),MIN(t2.date)) + 1 AS 'days elapsed',
+SUM(t2.precip) / (DATEDIFF(MAX(t2.date),MIN(t2.date)) + 1)
+AS 'avg. precip'
+FROM rainfall AS t1 INNER JOIN rainfall AS t2
+ON t1.date >= t2.date
+GROUP BY t1.date;
+
+SELECT stage, km, t 
+FROM marathon;
+
+SELECT t1.stage, t1.km, SUM(t2.km) AS 'cum. km'
+FROM marathon AS t1 INNER JOIN marathon AS t2
+ON t1.stage >= t2.stage
+GROUP BY t1.stage;
+
+
+SELECT t1.stage, t1.km, t1.t,
+SUM(t2.km) AS 'cum. km',
+SEC_TO_TIME(SUM(TIME_TO_SEC(t2.t))) AS 'cum. t',
+SUM(t2.km)/(SUM(TIME_TO_SEC(t2.t))/(60*60)) AS 'avg. km/hour'
+FROM marathon AS t1 INNER JOIN marathon AS t2
+ON t1.stage >= t2.stage
+GROUP BY t1.stage;
+
+SELECT team, wins, losses FROM standings1
+ORDER BY wins-losses DESC;
+
+SET @n = (SELECT COUNT(score) FROM testscore);
+
 SET @n = (SELECT COUNT(score) FROM testscore);
 
 SELECT score, (COUNT(score)*100)/@n AS percent
