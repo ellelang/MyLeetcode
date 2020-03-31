@@ -339,6 +339,17 @@ where datediff( '2020-01-07',dates)<=7
 group by user_id
 having cnt_search >= 2;
 
+SELECT SUM(CASE WHEN cnt_result >=2 THEN 1 ELSE 0 END)/COUNT(*) as percent
+FROM(
+SELECT s.user_id, count(result_id) as cnt_result
+FROM searches s
+LEFT JOIN search_results r
+ON s.search_id = r.search_id
+GROUP BY s.user_id) tmp;
+
+
+
+
 # how many users conducted searches that lead to multiple result_type?
 select t1.user_id, count(distinct t2.result_type) as cnt_type
 from searches t1
@@ -377,13 +388,15 @@ INSERT INTO user  VALUES
     
 # Q1 what is the post success rate for each day in the last week?
 
-
 select dates, round(ifnull(sum(case when d_events = 'post' then 1 else 0 end)/ifnull(SUM(CASE WHEN d_events = 'enter' or d_events = 'post' THEN 1 ELSE 0 END),0),0),2) as post_rate
 from composer 
 where DATEDIFF('2019-01-07', dates) <= 7
 group by dates;
 
 # Q2 what is the average number of post per daily active user by country today?
+
+
+
 select tc.dates, tc.user_id, round(ifnull(sum(if(tc.d_events = 'post',1,0))/count(tc.dates),0),2) as post_avg
 from composer tc
 left join user tu
@@ -537,13 +550,17 @@ SELECT user_id, dates, COUNT(sessionid) num
 FROM ulog
 GROUP BY 1,2)t;
 
+SELECT user_id, dates, AVG(COUNT(sessionid)) AVG_num
+FROM ulog
+GROUP BY 1,2;
 
 #Q2: daily active user for the past 30 days
 
-
-SELECT dates, user_id, sessionid, event
+SELECT dates, COUNT(DISTINCT user_id) as cnt_active
+FROM (
+SELECT *
 FROM ulog 
-WHERE event ='click' 
-or event ='first_scroll' 
-or event = 'surface_enter';
+WHERE event IN ('click','first_scroll' ,'surface_enter')
+AND DATEDIFF('2020-01-21', dates) <= 30) TEMP
+GROUP BY dates;
 
