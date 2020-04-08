@@ -20,3 +20,10 @@ FROM(
     ) tem
 ORDER BY rate DESC 
 LIMIT 1;
+
+
+SELECT question_id
+FROM(SELECT question_id, IFNULL(SUM(IF(action = 'answer',1,0))/COUNT(*),0) AS answer_rate
+FROM survey_log 
+GROUP BY question_id
+ORDER BY answer_rate desc LIMIT 1)T;

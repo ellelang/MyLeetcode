@@ -40,4 +40,26 @@ FROM (
     FROM request_accepted) AS A
 GROUP BY A.ids
 ORDER BY COUNT(*) DESC
-LIMIT 1
+LIMIT 1;
+
+WITH req_accept AS(
+    SELECT requester_id as ids 
+    FROM request_accepted
+    UNION ALL
+    SELECT accepter_id as ids
+    FROM request_accepted
+),
+
+cnt_fds as(
+SELECT ids, COUNT(*) AS NUM
+FROM req_accept
+GROUP BY ids),
+
+rank_cnt as(
+SELECT ids,
+RANK() OVER (ORDER BY NUM DESC) as rank_num 
+FROM cnt_fds)
+
+SELECT ids
+FROM rank_cnt
+WHERE rank_num = 1;

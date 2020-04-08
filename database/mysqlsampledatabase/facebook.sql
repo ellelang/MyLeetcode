@@ -1,4 +1,53 @@
 use leetcode;
+DROP TABLE IF EXISTS region_company;
+CREATE TABLE If Not Exists region_company ( Country varchar(50), Region varchar(50), Sales int );
+INSERT INTO region_company (Country, Region, Sales)  VALUES ('Canada', 'Alberta', 100);
+INSERT INTO region_company (Country, Region, Sales)  VALUES ('Canada', 'British Columbia', 200);
+INSERT INTO region_company (Country, Region, Sales)  VALUES ('Canada', 'British Columbia', 300);
+INSERT INTO region_company (Country, Region, Sales)  VALUES ('United States', 'Montana', 100);
+
+SELECT Country, Region, AVG(sales) AS avg_sales
+FROM  region_company
+GROUP BY Country, Region WITH ROLLUP;
+
+SELECT IF(GROUPING (Country), 'whole_country', Country) as Country,
+IF(GROUPING (Region), 'whole_region', Region) as Region,
+AVG(sales) as avg_sales
+FROM region_company
+GROUP BY Country, Region WITH ROLLUP;
+
+
+DROP TABLE IF EXISTS instagram;
+CREATE TABLE If Not Exists instagram ( dates DATE, caller_id INT, receiver_id INT, duration float, caller_country VARCHAR(32),  receiver_country VARCHAR(32) );
+INSERT INTO instagram (dates, caller_id,  receiver_id,duration, caller_country , receiver_country)  VALUES ('2018-05-21', 1234, 7567, 63.4, 'ES', 'ES');
+INSERT INTO instagram (dates, caller_id,  receiver_id,duration, caller_country , receiver_country)  VALUES ('2018-05-12',1234, 3669, 50.8,'ES', 'ES');
+INSERT INTO instagram (dates, caller_id,  receiver_id,duration, caller_country , receiver_country)  VALUES ('2018-05-08', 1234, 8998, 0.0, 'ES', 'PT');
+INSERT INTO instagram (dates, caller_id,  receiver_id,duration, caller_country , receiver_country)  VALUES ('2018-05-08', 7567, 1234, 63.4, 'ES', 'ES');
+
+WITH cte1 as(
+SELECT dates, caller_id as uid
+FROM instagram
+UNION
+SELECT dates, receiver_id as uid
+FROM instagram),
+
+cte2 as(
+SELECT uid, MIN(dates) as first_day
+FROM cte1
+GROUP BY uid
+HAVING MIN(dates) = '2018-05-08')
+
+SELECT 
+DATEDIFF(cte1.dates, '2018-05-08') as X_DAY,
+COUNT(DISTINCT cte1.uid) as cnt_users
+FROM cte1
+LEFT JOIN cte2
+ON cte1.uid = cte2.uid
+GROUP BY X_DAY
+ORDER BY X_DAY;
+
+
+
 
 DROP TABLE IF EXISTS friend_request ;
 DROP TABLE IF EXISTS request_accepted;
@@ -62,13 +111,75 @@ Create table If Not Exists friending (ds DATE NULL,  action_stat varchar(64) NOT
 Truncate table friending;
 insert into friending (ds, action_stat, actor_uid,  target_uid) values ('2016/06/01', 'send_request', '1', '2');
 insert into friending (ds, action_stat, actor_uid,  target_uid) values ('2016/06/02','send_request','1', '3');
+insert into friending (ds, action_stat, actor_uid,  target_uid) values ('2016/06/03','send_request','2', '4');
 insert into friending (ds, action_stat, actor_uid,  target_uid) values ('2016/06/02','send_request','4', '1');
 insert into friending(ds, action_stat, actor_uid,  target_uid) values ('2016/06/08', 'send_request', '2', '3');
 insert into friending(ds, action_stat, actor_uid,  target_uid) values ('2016/06/10','accept_request', '3', '4');
+insert into friending (ds, action_stat, actor_uid,  target_uid) values ('2016/06/08','accept_request','4', '2');
 insert into friending(ds, action_stat, actor_uid,  target_uid) values ('2016/06/02', 'accept_request', '3', '1');
-insert into friending(ds, action_stat, actor_uid,  target_uid) values ('2016/06/03','accept_request', '2', '1');
+insert into friending(ds, action_stat, actor_uid,  target_uid) values ('2016/06/02','accept_request', '2', '1');
 insert into friending (ds, action_stat, actor_uid,  target_uid) values ('2016/06/17', 'accept_request', '1', '4');
 insert into friending (ds, action_stat, actor_uid,  target_uid) values ('2016/06/10', 'unfriend', '2', '4');
+
+SELECT tb1.ds, tb1.actor_uid as sendid, tb1.target_uid as wait_id, tb2.actor_uid as acceptid, tb2.ds as backds
+FROM  friending tb1
+LEFT JOIN friending tb2
+ON tb1.target_uid = tb2.actor_uid
+WHERE  tb1.action_stat = 'send_request';
+
+
+SELECT ds, count(DISTINCT actor_uid) + COUNT(DISTINCT target_uid) as cnt_num
+FROM(
+SELECT ds, actor_uid, target_uid 
+FROM friending tb1
+WHERE action_stat = 'accept_request') t
+GROUP BY ds
+ORDER BY ds;
+
+SELECT B.ds, COUNT(DISTINCT B.actor_uid) 
+FROM(
+(SELECT ds, actor_uid, target_uid
+FROM friending
+WHERE action_stat='send_request'
+) A
+JOIN
+(SELECT ds, actor_uid, target_uid
+FROM friending
+WHERE action_stat='accept_request'
+) B
+ON A.target_uid=B.actor_uid and A.actor_uid = B.target_uid)
+GROUP BY B.ds;
+
+
+WITH send_accept as (
+SELECT actor_uid as id1, target_uid as id2
+FROM friending
+WHERE action_stat = 'send_request'
+UNION
+SELECT actor_uid as id1, target_uid as id2
+FROM friending
+WHERE action_stat = 'accept_request'),
+
+unfriend as
+(SELECT actor_uid as id1, target_uid as id2
+FROM friending
+WHERE action_stat = 'unfriend'),
+
+except_unfriend as (
+SELECT A.* 
+FROM send_accept A
+LEFT JOIN  unfriend B
+ON (A.id1  = B.id1 AND A.id2 = B.id2) or (A.id2  = B.id1 AND A.id1 = B.id2)
+WHERE B. id2 IS NULL)
+
+SELECT id1, COUNT(DISTINCT id2) AS cnt_friend
+FROM except_unfriend
+GROUP BY id1;
+
+
+SELECT id1, COUNT(DISTINCT id2) as cnt_friend
+FROM send_accept
+GROUP BY id1;
 
 
 /* Q1: How is the overall friending acceptance rate changing over time? */  
@@ -90,6 +201,43 @@ group by ids) tb2
 order by cnt desc
 limit 1;
 
+SELECT A.actor_uid,
+COUNT(DISTINCT B.actor_uid) as friend_cnt
+FROM
+(
+SELECT actor_uid, target_uid
+FROM friending
+WHERE action_stat='sent_request'
+AND (actor_uid, target_uid) NOT IN
+(
+SELECT actor_uid, target_uid
+FROM friending
+WHERE action_stat='unfriend'
+)
+) A
+JOIN
+(
+SELECT actor_uid, target_uid
+FROM friending
+WHERE action_stat='accept_request'
+AND (actor_uid, target_uid) NOT IN
+(
+SELECT actor_uid, target_uid
+FROM friending
+WHERE action_stat='unfriend'
+)
+) B ON A.actor_uid=B.target_uid AND A.target_uid=B.actor_uid;
+
+
+
+
+
+
+
+
+
+
+
 DROP TABLE IF EXISTS stories;
 CREATE TABLE stories (
   
@@ -110,8 +258,63 @@ INSERT INTO stories VALUES ("Jan-2",8, 7,"comment",6);
 
 
 # Question: find the distribution of stories based on comment count
-select *
-from stories;
+WITH story_tb AS
+(SELECT content_id as story_id
+FROM stories
+WHERE content_type IN ('photo', 'post' ,'video')),
+
+cte2 as (
+SELECT story_id, 
+SUM(IF(tb1.target_id IS NULL,0,1)) AS cnt_comment
+FROM story_tb
+LEFT JOIN stories tb1
+ON story_tb.story_id = tb1.target_id
+GROUP BY story_id)
+
+SELECT cnt_comment, COUNT(DISTINCT story_id ) as freq
+FROM cte2
+GROUP BY cnt_comment;
+
+-- Q4: Percent of post having at least one comment
+WITH post_tb AS(
+SELECT content_id as post_id
+FROM stories
+WHERE content_type = 'post'),
+
+cte2 as
+(SELECT post_id,
+IF(tb1.content_type = 'comment',1,0) as comments
+FROM post_tb
+LEFT JOIN stories tb1
+ON post_id = tb1.target_id),
+
+cte3 as(
+SELECT post_id, SUM(comments) as cnts
+FROM cte2
+GROUP BY post_id)
+
+
+SELECT
+SUM(IF(cte3.cnts >= 1,1,0)) / COUNT(*) AS p_five_comments
+FROM cte3;
+
+
+-- SELECT SUM(case when comments >0 then 1 else 0 end)/count(*) as pnc
+-- FROM cte2;
+
+/*cte3 as(
+SELECT post_id, SUM(comments)
+FROM cte2
+GROUP BY post_id
+HAVING SUM(comments) >= 1)*/
+
+
+
+
+
+
+
+-- select * from cte2;
 
 
 
@@ -514,6 +717,20 @@ where datediff('2020-01-15', t1.dates) <= 30
 group by t2.country;
 
 # how many impressions before a user create an ad given an unit?
+with cte1 as(
+SELECT tb1.user_id, tb1.unit_id, tb1.ad_event as allevent, tb2.ad_event as before_event
+FROM  ad4ad tb1
+LEFT JOIN ad4ad tb2
+ON tb1.unit_id = tb2.unit_id AND
+tb2.dates <= tb1.dates AND
+tb1.ad_event = 'created_ad' and tb2.ad_event = 'impression')
+
+SELECT AVG(cnt_occ) 
+FROM(
+SELECT unit_id, SUM(IF(allevent = 'impression',1,0)) as cnt_occ
+FROM cte1
+GROUP BY unit_id, user_id)T;
+
 
 select avg(t.num_impression) as avg_imp_num
 from(
@@ -550,9 +767,9 @@ SELECT user_id, dates, COUNT(sessionid) num
 FROM ulog
 GROUP BY 1,2)t;
 
-SELECT user_id, dates, AVG(COUNT(sessionid)) AVG_num
-FROM ulog
-GROUP BY 1,2;
+SELECT (COUNT(session_id) / COUNT(DISTINCT user_id) ) as average
+FROM table ulog
+WHERE DATEDIFF(curdate(), dates)<=30
 
 #Q2: daily active user for the past 30 days
 
@@ -564,3 +781,31 @@ WHERE event IN ('click','first_scroll' ,'surface_enter')
 AND DATEDIFF('2020-01-21', dates) <= 30) TEMP
 GROUP BY dates;
 
+Create table If Not Exists messages ( user_A INT NOT NULL, user_B INT NULL, n_messages INT NULL);
+Truncate table messages;
+insert into messages (user_A , user_B, n_messages) values ('1', '2', '20');
+insert into messages (user_A , user_B, n_messages) values ('1', '3', '30');
+insert into messages (user_A , user_B, n_messages) values ('2', '3', '50');
+insert into messages (user_A , user_B, n_messages) values ('3', '4', '30');
+insert into messages (user_A , user_B, n_messages) values ('4', '2', '50');
+
+WITH cte1 as (
+SELECT user_A, user_B,
+SUM(n_messages) OVER(PARTITION BY user_A, user_B) as total
+FROM  messages),
+
+cte2 as (
+SELECT user_A, user_B,
+RANK() OVER (PARTITION BY user_A ORDER BY total DESC) as rank_message
+FROM cte1)
+
+select user_A, user_B
+from cte2
+WHERE rank_message = 1;
+
+DROP table IF EXISTS cus;
+Create table If Not Exists cus( cus_id INT NOT NULL, dates DATE);
+insert into cus values ('1', '2019-12-1');
+insert into cus values ('1', '2019-12-2');
+insert into cus values ('2', '2019-12-3');
+insert into cus values ('3', '2019-12-9');
