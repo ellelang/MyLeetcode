@@ -809,3 +809,15 @@ insert into cus values ('1', '2019-12-1');
 insert into cus values ('1', '2019-12-2');
 insert into cus values ('2', '2019-12-3');
 insert into cus values ('3', '2019-12-9');
+insert into cus values ('4', '2019-12-15');
+
+SELECT cus_id, dates,
+COUNT(cus_id) OVER (ORDER BY dates RANGE INTERVAL 7 DAY PRECEDING ) as cnt_id
+FROM cus;
+
+select  a.dates, count(distinct b.cus_id)
+From cus a
+left join cus bs
+On a.dates - b.dates between 0 and 7
+Group by a.dates
+Order by a.dates;
