@@ -34,4 +34,6 @@ select student_id
 FROM cte1
 where score = max_score OR score = min_score) and 
 student_id IN (SELECT DISTINCT student_id FROM Exam);
+
+SELECT SHIGT
                      
