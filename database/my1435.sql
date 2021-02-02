@@ -8,18 +8,25 @@ insert into Sessions (session_id, duration) values ('3', '299');
 insert into Sessions (session_id, duration) values ('4', '580');
 insert into Sessions (session_id, duration) values ('5', '1000');
 
-WITH cte1 as (
-select session_id,
-CASE WHEN duration >= 0 and duration < 300 THEN '[0-5>'
-WHEN duration >= 300 and duration < 600 THEN '[5-10>'
-WHEN duration >= 600 and duration < 900 THEN '[10-15>'
-ELSE '15 or more' end AS dur_type
-FROM Sessions 
+with CTE1 as
+(
+select session_id, CASE 
+     WHEN duration/60>= 0 and duration/60<5 then '[0-5>'
+     WHEN duration/60>= 5 and duration/60<10 then '[5-10>'
+     WHEN duration/60>=10 and duration/60<15 then '[10-15>'
+     else '15 or more' end as bin
+    from Sessions),
+    
+CTE2 as
+(
+    select '[0-5>' as Bin
+    Union All
+    select '[5-10>' as Bin
+    Union All
+    select '[10-15>' as Bin
+    Union All
+    select '15 or more' as Bin
 )
-
-select dur_type as bin,
-IFNULL(COUNT(*),0) as count
-from CTE1
-group by dur_type;
-
-
+Select B.bin as BIN, Coalesce(count(session_id),0) as Total from CTE1 A Right Join CTE2 B
+on A.Bin=B.bin
+group by B.Bin;
