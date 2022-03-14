@@ -1,3 +1,4 @@
+USE leetcode;
 DROP TABLE IF EXISTS Employees;
 DROP TABLE IF EXISTS EmployeeUNI;
 Create table If Not Exists Employees (id int, name varchar(20));
